@@ -1,0 +1,14 @@
+[
+    {
+        "menu_name": "运行schonner编译脚本",
+        "cmd": "osascript -e  'tell app \"Terminal\" to do script \"sh /Users/gdlocal/Desktop/myCode/py3/pystray_/shTool/Tool_file/CurrentTestFail.sh\"'"
+    },
+    {
+        "menu_name": "hello",
+        "cmd": "echo 'Hello World' | grep Hello"
+    },
+    {
+        "menu_name": "test",
+        "cmd": "open /Users/gdlocal/Desktop/myCode/py3"
+    }
+]

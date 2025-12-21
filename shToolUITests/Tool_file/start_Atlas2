@@ -1,0 +1,36 @@
+THIS_FILE=`basename "$0"`
+#launchctl unload /Library/LaunchAgents/com.apple.hwte.AtlasCore2.plist
+#sleep 0.1
+#killall AtlasCore
+#sleep 0.1
+#killall AtlasCoreDetectionProcess
+#sleep 0.1
+#killall AtlasTestGroupController
+#sleep 0.1
+#${HOME}/Library/clean_up.sh
+#sleep 1
+#
+#src_file="${HOME}/Library/Atlas2/CustomConfig/station-custom-config_normal.plist"
+#dst_file="${HOME}/Library/Atlas2/CustomConfig/station-custom-config.plist"
+#if test -f $src_file ; then
+#	echo "replace file..."
+#	echo $src_file
+#	echo $dst_file
+#	rm -f $dst_file
+#	sleep 0.5 
+#	cp $src_file $dst_file
+#	sleep 0.5
+#fi
+
+
+open /AppleInternal/Applications/AtlasRecordsUI.app &
+sleep 1
+open /AppleInternal/Applications/AtlasUI.app
+sleep 1
+
+#launchctl load /Library/LaunchAgents/com.apple.hwte.AtlasCore2.plist
+#sleep 1
+#/usr/local/bin/AtlasLauncher start ~/Library/Atlas2/Config/station.plist
+#sleep 0.5
+osascript -e 'tell application "Terminal" to close (every window whose name contains "'"$THIS_FILE"'")' &
+exit
