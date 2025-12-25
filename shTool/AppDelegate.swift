@@ -144,10 +144,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if !arguments.isEmpty {
             process.arguments = arguments
         }
+        var targetWorkDir: String?
         
-        // 设置工作目录
+        // 1. 优先使用外部传入的 cwd（保持原有逻辑）
         if let cwd = cwd, FileManager.default.fileExists(atPath: cwd) {
-            process.currentDirectoryPath = cwd
+            targetWorkDir = cwd
+            print("📂 使用自定义工作目录：\(cwd)")
+        }
+        // 2. 未传入 cwd 或 cwd 不存在时，使用 App 资源目录
+        else if let resourceURL = Bundle.main.resourceURL {
+            targetWorkDir = resourceURL.path
+            print("📂 未指定自定义目录，使用 App 资源目录：\(targetWorkDir!)")
+        }
+        
+        // 3. 最终设置工作目录（兜底：如果资源目录也获取失败，用默认用户目录）
+        if let targetWorkDir = targetWorkDir {
+            process.currentDirectoryPath = targetWorkDir
+        } else {
+            print("⚠️ 资源目录获取失败，使用默认工作目录：\(NSHomeDirectory())")
         }
         
         // 设置环境变量
