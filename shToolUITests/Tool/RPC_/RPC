@@ -1,0 +1,22 @@
+#!/bin/bash
+THIS_FILE=`basename "$0"`
+# echo $THIS_FILE
+# 当前路径
+SHELL_FOLDER=$(cd "$(dirname "$0")";pwd)
+cd $SHELL_FOLDER
+
+# read -p "请输入bin文件路径:" bin_file
+# echo $bin_file > /tmp/binname.txt
+
+AtlasGroupProcess coreless ./RPC.lua
+
+
+echo "✅ 完成 按任意键关闭窗口"
+read 
+echo -e '\033[;32;1m'
+echo "********************* 3秒后自动关闭此窗口 ************************\n\n"
+
+echo -e "\033[0m"
+sleep 3
+osascript -e 'tell application "Terminal" to close (every window whose name contains "'"$THIS_FILE"'")' &
+exit

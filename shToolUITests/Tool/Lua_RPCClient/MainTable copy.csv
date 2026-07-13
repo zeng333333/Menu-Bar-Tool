@@ -1,0 +1,6 @@
+Disable,testName,action,command,lowerLimit,upperLimit,units
+,relay_reset,action.getInfo,"relay.reset(reset)",,,
+,args_test,action.getInfo,"mac_demo.args_test(hello)",,,
+,measure_before,action.measure,"sib_board.lock_xadc_measure(0,0,200)",,,
+,sleep_1s,action.sleep,sleep 1,,,
+,measure_after,action.measure,"sib_board.lock_xadc_measure(0,0,200)",590,610,mV

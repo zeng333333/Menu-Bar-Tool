@@ -1,0 +1,6 @@
+[
+    {
+        "menu_name": "查看当前Atlas具体fail项",
+        "cmd": "export SH_PATH=$(pwd); osascript -e 'set shPath to system attribute \"SH_PATH\"'  -e 'tell application \"Terminal\" to do script \"sh \" & quoted form of (shPath & \"/Tool/CurrentTestFail.sh\")'"
+    }
+]

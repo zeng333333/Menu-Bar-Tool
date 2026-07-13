@@ -1,0 +1,36 @@
+#!/usr/bin/expect
+
+# 获取当前脚本的路径，并规范为绝对路径
+set scriptPath [file normalize [info script]]
+file delete -force ~/.ssh/known_hosts
+# 如果需要获取该脚本所在的目录
+set scriptDir [file dirname $scriptPath]
+cd "$scriptDir"
+
+set iplist "
+10.8.30.33
+"
+
+set targetPath "/Users/gdlocal/Documents/demo"
+
+set password "123456"
+set username "gdlocal"
+foreach ip $iplist {
+	puts $ip
+	spawn rsync -avhz --delete -e ssh $username@$ip:$targetPath $scriptDir/ 
+
+	expect {
+	    "yes/no" {
+	    	send "yes\r"; 
+	    	exp_continue
+		}
+	    "Password:" {
+	    	send "$password\r" 
+	    }
+	}
+
+	set timeout -1
+	expect "~ %"
+
+}
+puts "\n\n 同步完成\n\n"

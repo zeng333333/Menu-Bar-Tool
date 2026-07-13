@@ -1,0 +1,187 @@
+#!/bin/sh
+
+clear
+
+THIS_FILE=`basename "$0"`
+dir_name=`dirname "$0"`
+# echo $dir_name
+# echo $THIS_FILE
+# echo ${dir_name}/${THIS_FILE}
+
+debug="NO"
+debuginfo="YES"
+mooncake_0_path="/Users/gdlocal/Library/Atlas2/Modules/Mooncake/mooncake_0.so"
+
+AtlasGroupProcessLocal="/usr/local/bin/AtlasGroupProcess"
+AtlasGroupProcess="${AtlasGroupProcessLocal}"
+CompilerPlistPath="Assets/Coverage/SchoonerCompilerArgs.plist"
+
+if [[ ${debug} == 'YES' ]]; then
+    set -x
+fi
+
+debugPrint() {
+    if [[ ${debuginfo} == "YES" ]]; then
+        echo "Debug: $@"
+    fi
+}
+
+func_file_type()
+{
+    file $1 | grep -q "arm64" && echo "arm64" || echo "x86_64"
+}
+
+func_sys_type()
+{
+    uname -m  | grep -q "arm64" && echo "arm64" || echo "x86_64"
+}
+
+func_cp_mooncake_0()
+{
+    if [[ $1 == "arm64" ]];then
+        if [[ -e "$dir_name/arm64/mooncake_0.so" ]]; then
+            cp "$dir_name/arm64/mooncake_0.so" "/Users/gdlocal/Library/Atlas2/Modules/Mooncake/mooncake_0.so"
+            cp "$dir_name/arm64/mooncake.lua" "/Users/gdlocal/Library/Atlas2/Modules/Mooncake/mooncake.lua"
+            debugPrint "$dir_name/arm64/mooncake_0.so" "/Users/gdlocal/Library/Atlas2/Modules/Mooncake/mooncake_0.so"
+        fi
+    fi
+    if [[ $1 == "x86_64" ]];then
+        if [[ -e "$dir_name/x86_64/mooncake_0.so" ]]; then
+            cp "$dir_name/x86_64/mooncake_0.so" "/Users/gdlocal/Library/Atlas2/Modules/Mooncake/mooncake_0.so"
+            cp "$dir_name/x86_64/mooncake.lua" "/Users/gdlocal/Library/Atlas2/Modules/Mooncake/mooncake.lua"
+            debugPrint "cp $dir_name/x86_64/mooncake_0.so" "/Users/gdlocal/Library/Atlas2/Modules/Mooncake/mooncake_0.so"
+        fi
+    fi
+}
+
+func_backup_dir_if_exist(){
+    dir_path=$1
+
+    if [[ ! -e $dir_path ]]; then
+        echo "[备  份] 文件不存在，跳过：$dir_path"
+        return 0
+    fi
+
+    base_name=`basename $dir_path`
+    dir_name=`dirname $dir_path`
+    bakup_dir="${dir_name}/${base_name}_Backup"
+    date_str=`date "+%Y%m%d%H%M%S"`
+    target_dir="${bakup_dir}/${base_name}"
+
+    echo "[备  份] 目录：$dir_path"
+    if [[ ! -e $bakup_dir ]]; then
+        echo "[创  建] 备份目录：$bakup_dir"
+        mkdir $bakup_dir
+    fi
+    echo "[复 制] 目录：$dir_path -> $target_dir"
+    cp -r $dir_path $target_dir
+    echo "[切  换] 目录：${bakup_dir}"
+    cd ${bakup_dir}
+    echo "[压  缩] 目录：${base_name} -> ${base_name}_${date_str}.zip"
+    zip -q -r "${base_name}_${date_str}.zip" ${base_name}
+    rm -rf ${target_dir}
+}
+
+func_check_mooncake()
+{
+    if [[ -e "$mooncake_0_path" ]]; then
+        SC="SC"
+    else
+        debugPrint "$mooncake_0_path No such file"
+        exit
+    fi
+
+    if [[ $(func_file_type $mooncake_0_path) == $(func_sys_type) ]]; then
+        SC="SC"
+    else
+        debugPrint "$(func_sys_type)"
+        func_cp_mooncake_0 "$(func_sys_type)"
+    fi
+}
+
+initializeCompilerPlist() {
+    local file=$1
+    # per man page, plutil is available since macos 10.2
+    # ideall we can use the following line to create an empty plist
+    # but later it is found that macOS 10.15 and 11.0 does not support `plutil -create`
+    # while macOS 12.0 support this
+    #  plutil -create xml1 "${file}"
+    # so, use echo to create an empty json dict, and convert it into plist
+    # to make it work in macOS 10.15+
+    # TODO: if schooner is to support macOS 12.0+ someday, switch to `plutil -create` here.
+    echo "{}" > "${file}" || exit $?
+    plutil -convert xml1 "${file}" || exit $?
+    # macOS 10.15 and 11.0 `plutil -insert` does not support -array and -dictionary. So
+    # 2. use -json to insert table and array
+    plutil -insert GroupArgs -json [] "${file}" || exit $?
+    plutil -insert GroupArgs.0 -json {} "${file}" || exit $?
+}
+
+addPlistEntry() {
+    local file="$1"
+    local key="$2"
+    local type="$3"
+    local value="$4"
+    if [[ ${type} == 'array' ]]; then
+        # macOS 10.15 and 11.0 `plutil -insert` does not support -array and -dictionary. So
+        # use -json to insert table and array
+        plutil -insert GroupArgs.0.${key} -json "[${value}]" "${file}" || exit $?
+    else
+        # per man page, plutil is available since macos 10.2
+        plutil -insert GroupArgs.0.${key} -${type} "${value}" "${file}" || exit $?
+    fi
+}
+
+run() {
+    local primary="${1}"
+    # debugPrint "primary $primary"
+    local secondary=("${@:2}")
+    # debugPrint "secondary $secondary"
+    local ret
+    if [[ -z "${primary}" ]]; then
+        echo 'No primary Atlas2 folder found. Schooner compiler needs at least 1 Atlas2 folder to compile. Exiting with -1.'
+        exit
+    fi
+
+    local plistPath="${primary}${CompilerPlistPath}"
+    echo "[修 改] 文件：${plistPath}"
+    debugPrint "Generating compiler coreless plist to ${plistPath}"
+    initializeCompilerPlist "${plistPath}"
+    debugPrint "Setting primary Atlas2 folder: ${primary}"
+    addPlistEntry "${plistPath}" PrimaryAtlas2 string "${primary}"
+
+    # echo 'Running Schooner compiler'
+    local entry
+    entry="${primary}Modules/Schooner/Compiler/BuildSchoonerSequence.lua"
+    mkdir -p "${primary}Modules/coverage"
+
+    echo "[编  译] "${AtlasGroupProcess}" coreless "${entry}" "${plistPath}""
+    ret=$(${AtlasGroupProcess} coreless "${entry}" "${plistPath}" 2>&1)
+    # ${AtlasGroupProcess} coreless "${entry}" "${plistPath}" 2>&1
+    # ret=$?
+
+    xattr -rc ${ATLAS2_FOLDER}
+    echo "[xattr] xattr -rc ${ATLAS2_FOLDER}"
+    
+    if echo "$ret" | grep -qi "Error:"; then
+        ${AtlasGroupProcess} coreless "${entry}" "${plistPath}" 2>&1
+        ret=$?
+        debugPrint "compiler ret: "${ret}
+        echo "[错 误] 编译失败，请检查错误信息"
+    else
+        echo "[成 功] 编译成功 "
+    fi
+    exit
+}
+
+main() {
+    xattr -rx /Users/$(whoami)/Library/Atlas2
+    ATLAS2_FOLDER="/Users/$(whoami)/Library/Atlas2/"
+    func_check_mooncake
+    # 备份Atlas2
+    func_backup_dir_if_exist ${ATLAS2_FOLDER}
+    run ${ATLAS2_FOLDER}
+}
+
+main "${@}"
+

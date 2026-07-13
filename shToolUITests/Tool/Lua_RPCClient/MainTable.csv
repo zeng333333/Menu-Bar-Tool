@@ -1,0 +1,3 @@
+Disable,testName,action,command,lowerLimit,upperLimit,units
+,relay_reset,action.getInfo,"relay.reset()",,,
+,read_calibration,action.getInfo,"syscal.read_calibration(PSU)",,,

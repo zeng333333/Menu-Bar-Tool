@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CBPasscodes</key>
+	<dict>
+		<key>1</key>
+		<string>000102090A0B</string>
+	</dict>
+	<key>ChallengePasscodes</key>
+	<dict>
+		<key>Pearl</key>
+		<string>445566778899</string>
+	</dict>
+	<key>EncryptionKeys</key>
+	<dict>
+		<key>AuditFile</key>
+		<string>ij9284hg897h2398uwi</string>
+	</dict>
+	<key>SigningKeys</key>
+	<dict>
+		<key>CalData</key>
+		<string>AABBCCDDEEFF</string>
+	</dict>
+</dict>
+</plist>

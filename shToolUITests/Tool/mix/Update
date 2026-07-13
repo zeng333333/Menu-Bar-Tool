@@ -1,0 +1,47 @@
+#!/bin/zsh
+# 作者：junjie.liu@cygia.com
+# 时间: 2025-11-20
+
+THIS_FILE=`basename "$0"`
+
+# 当前路径
+SHELL_FOLDER=$(cd "$(dirname "$0")";pwd)
+cd "$SHELL_FOLDER"
+pwd
+
+# 
+
+# echo $# $1 $2 $3
+
+ethcad=$(ifconfig | grep -B 4 "inet .*100" | grep "^[a-z]" | awk '{print $1}' | sed 's/://')
+
+# ipaddr=$1
+# mixbundle_path=$2
+mixbundle_path=$1
+ipaddr=$2
+
+
+echo "$ethcad $ipaddr"
+
+# exit 0
+
+p=$(ping -t 3 $ipaddr | grep "0.0%" | awk '{print $7}' | sed 's/://')
+echo "mix -e $ethcad -i $ipaddr -f $mixbundle_path"
+if  [[ $p == "0.0%" ]]; then
+	mix -e $ethcad -i $ipaddr -f $mixbundle_path
+	# echo "mix -e $ethcad -i $ipaddr -f $mixbundle_path"
+elif [[ $p == "100.0%" ]]; then
+	echo ""
+	echo ""
+	echo "❌ 网络不通，请检查 $ipaddr"
+fi
+
+
+# mix -e $ethcad -i 192.168.99.32 -f ./*.mixbundle > slot1.log 2>&1
+# mix -e $ethcad -i 192.168.99.33 -f ./*.mixbundle
+# mix -e $ethcad -i 192.168.99.34 -f ./*.mixbundle
+# mix -e $ethcad -i 192.168.99.35 -f ./*.mixbundle
+# mix -e $ethcad -i 192.168.99.36 -f ./*.mixbundle
+# mix -e $ethcad -i 192.168.99.37 -f ./*.mixbundle
+# mix -e $ethcad -i 192.168.99.38 -f ./*.mixbundle
+# mix -e $ethcad -i 192.168.99.39 -f ./*.mixbundle > slot8.log 2>&1

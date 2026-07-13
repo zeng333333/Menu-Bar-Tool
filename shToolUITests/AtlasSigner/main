@@ -1,0 +1,85 @@
+#!/bin/bash
+# Created at: 12/12/2025
+# Author: Jingxin Zeng (cn33331@163.com)
+
+# 定义颜色代码
+RED=$(tput setaf 1)     # 红色（前景色编号1）
+GREEN=$(tput setaf 2)   # 绿色（编号2）
+YELLOW=$(tput setaf 3)  # 黄色（编号3）
+BLUE=$(tput setaf 4)    # 蓝色（编号4）
+MAGENTA=$(tput setaf 5) # 品红（编号5）
+CYAN=$(tput setaf 6)    # 青色（编号6）
+RESET=$(tput sgr0)      # 重置所有文本属性（颜色/加粗等）
+
+# 定义获取当前文件路径
+THIS_FILE=`basename "$0"`
+dir_name=`dirname "$0"`
+# echo $dir_name
+# echo $THIS_FILE
+# echo ${dir_name}/${THIS_FILE}
+
+show_menu() {
+	clear
+	echo "${CYAN}▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂"
+	echo "                            ${MAGENTA}菜单${CYAN}"
+	echo "▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂${RESET}"
+	echo "${YELLOW}选择方法"
+	echo "1 AtlasSigner_V231"
+	echo "2 AtlasSigner_V233"
+	echo "3 AtlasSigner_V234"
+	echo "4 AtlasSigner_V235"
+	echo "5 AtlasSigner_V236"
+	echo "6 AtlasSigner_V237"
+	echo "0 退出脚本${RESET}"
+	echo "${CYAN}▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂${RESET}"
+}
+
+func_run_Atlas_sign()
+{
+	AtlasSigner="$1"
+	echo $AtlasSigner
+  raw_file_paths=$(osascript -e '
+      try
+          set userInput to text returned of (display dialog ¬
+              "请不要轻易AtlasSigner，输入密码" ¬
+              with title "AtlasSigner" ¬
+              default answer "" ¬
+              buttons {"取消", "确认"} ¬
+              default button "确认")
+          return userInput
+      on error  # 用户点击"取消"时触发
+          return ""
+      end try
+  ')
+  local normalized_paths
+  normalized_paths=$(echo "$raw_file_paths" | xargs)
+	if [[ $normalized_paths == "123456" ]]; then
+		rm ~/Library/Atlas2/encrypted.manifest 
+		rm ~/Library/Atlas2/encrypted.sig
+
+		CURRENT_DIR=$(cd `dirname $0`; pwd)
+
+		"${CURRENT_DIR}/${AtlasSigner}" "${CURRENT_DIR}/check.plist" ~/Library/Atlas2
+	elif [[ condition ]]; then
+			echo "密码错误"
+	fi
+}
+
+# 主程序循环
+while true; do
+  show_menu
+  read -p "请输入功能编号: " choice
+  
+  case $choice in
+    1) func_run_Atlas_sign "AtlasSigner_V231";;
+    2) func_run_Atlas_sign "AtlasSigner_V233";;
+		3) func_run_Atlas_sign "AtlasSigner_V234";;
+		4) func_run_Atlas_sign "AtlasSigner_V235";;
+		5) func_run_Atlas_sign "AtlasSigner_V236";;
+		6) func_run_Atlas_sign "AtlasSigner_V237";;
+    0) echo "${RED}退出系统中...${RESET}"; exit 0 ;;
+    *) echo "${RED}无效输入，请重新选择${RESET}"; sleep 1 ;;
+  esac
+	echo "✅ 完成 按任意键继续下一步"
+	read 
+done

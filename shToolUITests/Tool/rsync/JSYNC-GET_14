@@ -1,0 +1,99 @@
+#!/usr/bin/expect
+# 作者：junjie.liu@cygia.com
+# 时间: 2025-11-20
+
+
+
+# 本脚本用于批量同步./tools 文件夹到多台电脑
+
+
+
+
+# 获取当前脚本的路径，并规范为绝对路径
+set scriptPath [file normalize [info script]]
+file delete -force ~/.ssh/known_hosts
+# 如果需要获取该脚本所在的目录
+set scriptDir [file dirname $scriptPath]
+cd "$scriptDir"
+
+
+
+set iplist "
+10.8.30.33
+"
+set iplist "
+10.8.30.14
+"
+
+
+set targetPath "/System/Volumes/Data/vault/ZJX_BF"
+set targetPath "/vault/ZJX_backup"
+set targetPath "/Users/gdlocal/Library/Atlas2----doe1"
+set targetPath "/Users/gdlocal/Library/1.zip"
+set targetPath "/Users/gdlocal/Library/Atlas2"
+
+set password "gdlocal"
+set username "gdlocal"
+foreach ip $iplist {
+	puts $ip
+	# rsync 增量同步， --delete 删除本机文件夹没有的文件，确保目标文件夹内容与本机文件夹内容一致
+	# set timeout 3
+	spawn rsync -avhz --delete -e ssh $username@$ip:$targetPath $scriptDir/Test/ 
+
+	expect {
+	    "yes/no" {
+	    	send "yes\r"; 
+	    	exp_continue
+		}
+	    "Password:" {
+	    	send "$password\r" 
+	    }
+	}
+
+	set timeout -1
+	expect "~ %"
+
+}
+
+# # 移除MacOS未知来源安全保护弹窗
+# foreach ip $iplist {
+# 	spawn ssh -o StrictHostKeyChecking=no $username@$ip
+
+# 	expect "*assword*"
+# 	send "$password\r"
+
+# 	expect "~ %"
+# 	send "xattr -rd com.apple.quarantine $targetPath\r"
+
+# 	expect "~ %"
+# 	#软链接
+# 	# send "ln -s $targetPath ~/Desktop\r"
+# 	# expect "~ %"
+# }
+
+
+
+puts "\n\n 同步完成✅\n\n"
+# exit 0
+# rsync -avhz --delete -e ssh $scriptDir/tools/ gdlocal@$ip:/System/Volumes/Data/vault/JJ/tools
+
+
+
+# 192.168.99.32
+# 192.168.99.33
+# 192.168.99.34
+# 192.168.99.35
+# 192.168.99.36
+# 192.168.99.37
+# 192.168.99.38
+# 192.168.99.39
+
+
+
+# echo -e '\033[;32;1m'
+# echo "********************* ✅ 完成 2秒后自动关闭此窗口 ************************\n\n"
+
+# echo -e "\033[0m"
+# sleep 2
+# osascript -e 'tell application "Terminal" to close (every window whose name contains "'"$THIS_FILE"'")' &
+# exit

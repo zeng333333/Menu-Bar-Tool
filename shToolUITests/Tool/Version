@@ -1,0 +1,17 @@
+echo "------------------------------------------------------"
+echo "find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'"
+echo "------------------------------------------------------"
+echo "xattr -rd com.apple.quarantine"
+echo "------------------------------------------------------"
+echo 修改func_run_update_mixbundle
+echo RPC.lua增加tab_json
+echo 增加Lua_RPCClient
+echo 增加AtlasLogToCSV
+echo 增加AtlasSigner
+echo 获取MIXlog和代码的方法，文件名增加IP地址
+echo 更新推送文件到MIX的方法
+echo 增加机台控制方式，调用Atlaslua electric_control_16up
+echo 增加auto方法,双击后获取shTool路径，在Library/LaunchAgents添加plist文件，实现开机自启动
+echo 更新SchoonerCompiler方法，识别当前mac是x86还是RAM64，自动替换对应mooncake_0.so
+echo 优化AtlasSigner使用，在Tool中，增加密码
+echo 更新SchoonerCompiler，编译后增加xattr -rc

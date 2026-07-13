@@ -1,0 +1,41 @@
+#!/bin/bash
+# Created at: 5/25/2026
+# Author: Jingxin Zeng (cn33331@163.com)
+
+THIS_FILE=`basename "$0"`
+
+# 自动获取：当前目录 → 回退两级 → 拼接APP路径
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+echo $SCRIPT_DIR
+APP_PATH="$(dirname "$(dirname "$SCRIPT_DIR")")/MacOS/shTool"
+echo $APP_PATH
+
+PLIST_before_cp="$SCRIPT_DIR/com.sc.appauto.plist"
+echo $PLIST_before_cp
+
+# 自动替换
+/usr/libexec/PlistBuddy -c "set ProgramArguments:0 $APP_PATH" "$PLIST_before_cp"
+echo "✅ 替换完成：$APP_PATH"
+
+# 你的 plist 路径
+PLIST="$HOME/Library/LaunchAgents"
+mkdir $PLIST
+PLIST_after_cp="$PLIST/com.sc.appauto.plist"
+echo $PLIST
+
+cp $PLIST_before_cp $PLIST
+
+killall shTool
+echo "killall shTool"
+
+# sleep 5
+
+launchctl unload $PLIST_after_cp
+launchctl load $PLIST_after_cp
+
+echo "load $PLIST_after_cp"
+
+
+# sleep 10
+osascript -e 'tell application "Terminal" to close (every window whose name contains "'"$THIS_FILE"'")' &
+exit

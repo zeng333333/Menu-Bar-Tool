@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AF059423300554D500B6E75A /* config_backup in Resources */ = {isa = PBXBuildFile; fileRef = AF059420300554D500B6E75A /* config_backup */; };
+		AF059424300554D500B6E75A /* Tool in Resources */ = {isa = PBXBuildFile; fileRef = AF059421300554D500B6E75A /* Tool */; };
+		AF059425300554D500B6E75A /* AtlasSigner in Resources */ = {isa = PBXBuildFile; fileRef = AF059422300554D500B6E75A /* AtlasSigner */; };
+		AF0594263005586200B6E75A /* AtlasSigner in Resources */ = {isa = PBXBuildFile; fileRef = AF059422300554D500B6E75A /* AtlasSigner */; };
+		AF0594273005586A00B6E75A /* config_backup in Resources */ = {isa = PBXBuildFile; fileRef = AF059420300554D500B6E75A /* config_backup */; };
+		AF0594283005586D00B6E75A /* Tool in Resources */ = {isa = PBXBuildFile; fileRef = AF059421300554D500B6E75A /* Tool */; };
 		AF4F58DB2EF5AFB40030AE7D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF4F58DA2EF5AFB40030AE7D /* AppDelegate.swift */; };
 		AF4F58DD2EF5AFB40030AE7D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF4F58DC2EF5AFB40030AE7D /* ViewController.swift */; };
 		AF4F58DF2EF5AFB60030AE7D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AF4F58DE2EF5AFB60030AE7D /* Assets.xcassets */; };
@@ -20,9 +26,6 @@
 		AF4F590A2EF5AFF70030AE7D /* config.json in Resources */ = {isa = PBXBuildFile; fileRef = AF4F59092EF5AFF70030AE7D /* config.json */; };
 		AF4F590B2EF5AFF70030AE7D /* config.json in Resources */ = {isa = PBXBuildFile; fileRef = AF4F59092EF5AFF70030AE7D /* config.json */; };
 		AF4F590C2EF5AFF70030AE7D /* config.json in Resources */ = {isa = PBXBuildFile; fileRef = AF4F59092EF5AFF70030AE7D /* config.json */; };
-		AF4F590E2EF5AFFF0030AE7D /* Tool_file in Resources */ = {isa = PBXBuildFile; fileRef = AF4F590D2EF5AFFF0030AE7D /* Tool_file */; };
-		AF4F590F2EF5AFFF0030AE7D /* Tool_file in Resources */ = {isa = PBXBuildFile; fileRef = AF4F590D2EF5AFFF0030AE7D /* Tool_file */; };
-		AF4F59102EF5AFFF0030AE7D /* Tool_file in Resources */ = {isa = PBXBuildFile; fileRef = AF4F590D2EF5AFFF0030AE7D /* Tool_file */; };
 		AF4F59132EF5B7E00030AE7D /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AF4F59112EF5B7E00030AE7D /* Info.plist */; };
 		AF4F59142EF5B7E00030AE7D /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AF4F59112EF5B7E00030AE7D /* Info.plist */; };
 /* End PBXBuildFile section */
@@ -45,6 +48,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AF059420300554D500B6E75A /* config_backup */ = {isa = PBXFileReference; lastKnownFileType = folder; path = config_backup; sourceTree = "<group>"; };
+		AF059421300554D500B6E75A /* Tool */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Tool; sourceTree = "<group>"; };
+		AF059422300554D500B6E75A /* AtlasSigner */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AtlasSigner; sourceTree = "<group>"; };
 		AF4F58D72EF5AFB40030AE7D /* shTool.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = shTool.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF4F58DA2EF5AFB40030AE7D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AF4F58DC2EF5AFB40030AE7D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -58,7 +64,6 @@
 		AF4F58F82EF5AFB60030AE7D /* shToolUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = shToolUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		AF4F59052EF5AFEB0030AE7D /* Tool.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Tool.icns; sourceTree = "<group>"; };
 		AF4F59092EF5AFF70030AE7D /* config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = config.json; sourceTree = "<group>"; };
-		AF4F590D2EF5AFFF0030AE7D /* Tool_file */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Tool_file; sourceTree = "<group>"; };
 		AF4F59112EF5B7E00030AE7D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -131,11 +136,13 @@
 		AF4F58F52EF5AFB60030AE7D /* shToolUITests */ = {
 			isa = PBXGroup;
 			children = (
+				AF059422300554D500B6E75A /* AtlasSigner */,
+				AF059420300554D500B6E75A /* config_backup */,
+				AF059421300554D500B6E75A /* Tool */,
 				AF4F58F62EF5AFB60030AE7D /* shToolUITests.swift */,
 				AF4F58F82EF5AFB60030AE7D /* shToolUITestsLaunchTests.swift */,
 				AF4F59052EF5AFEB0030AE7D /* Tool.icns */,
 				AF4F59092EF5AFF70030AE7D /* config.json */,
-				AF4F590D2EF5AFFF0030AE7D /* Tool_file */,
 			);
 			path = shToolUITests;
 			sourceTree = "<group>";
@@ -244,10 +251,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AF4F590E2EF5AFFF0030AE7D /* Tool_file in Resources */,
+				AF0594283005586D00B6E75A /* Tool in Resources */,
 				AF4F59062EF5AFEB0030AE7D /* Tool.icns in Resources */,
 				AF4F590A2EF5AFF70030AE7D /* config.json in Resources */,
+				AF0594263005586200B6E75A /* AtlasSigner in Resources */,
 				AF4F58DF2EF5AFB60030AE7D /* Assets.xcassets in Resources */,
+				AF0594273005586A00B6E75A /* config_backup in Resources */,
 				AF4F58E22EF5AFB60030AE7D /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -257,7 +266,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				AF4F59132EF5B7E00030AE7D /* Info.plist in Resources */,
-				AF4F590F2EF5AFFF0030AE7D /* Tool_file in Resources */,
 				AF4F59072EF5AFEB0030AE7D /* Tool.icns in Resources */,
 				AF4F590B2EF5AFF70030AE7D /* config.json in Resources */,
 			);
@@ -267,9 +275,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AF059423300554D500B6E75A /* config_backup in Resources */,
 				AF4F59142EF5B7E00030AE7D /* Info.plist in Resources */,
-				AF4F59102EF5AFFF0030AE7D /* Tool_file in Resources */,
+				AF059424300554D500B6E75A /* Tool in Resources */,
 				AF4F59082EF5AFEB0030AE7D /* Tool.icns in Resources */,
+				AF059425300554D500B6E75A /* AtlasSigner in Resources */,
 				AF4F590C2EF5AFF70030AE7D /* config.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

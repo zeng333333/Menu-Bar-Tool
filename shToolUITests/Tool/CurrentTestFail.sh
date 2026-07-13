@@ -1,7 +1,9 @@
 #!/bin/bash
+# Created at: 12/12/2025
+# Author: Jingxin Zeng (cn33331@163.com)
 
 # ===================== 配置参数 =====================
-TOTAL_DURATION=1800
+TOTAL_DURATION=9999999999999999999999999999999999999
 INTERVAL=10
 TARGET_PATH="${HOME}/Library/Logs/Atlas/active/group*/system/records.csv"
 PATTERN=",FAIL,"
@@ -53,9 +55,7 @@ log_and_echo ""
 # 循环执行监控
 while [[ $(date +%s) -lt ${END_TIME} ]]; do
     CURRENT_TIME=$(date +'%Y-%m-%d %H:%M:%S')
-    clear
-    log_and_echo "----- [${CURRENT_TIME}] 执行搜索 -----"
-    
+
     # 初始化临时文件存储聚合数据（替代关联数组，兼容bash 3.x）
     AGG_TMP=$(mktemp)
     matched=0
@@ -74,7 +74,7 @@ while [[ $(date +%s) -lt ${END_TIME} ]]; do
         [[ -z "$fail_lines" ]] && continue
         matched=1
 
-        # 解析每行FAIL记录，拼接行号+内容（用换行分隔）
+        # 解析每行FAIL记录，拼接行号+内容（用****分隔）
         line_info=""
         while read -r line; do
             [[ -z "$line" ]] && continue
@@ -83,15 +83,17 @@ while [[ $(date +%s) -lt ${END_TIME} ]]; do
             content=$(echo "$line" | cut -d':' -f2- | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
             content=${content:-"(无具体内容)"}
             # 拼接行信息（每行前加空格对齐，替代分号）
-            line_info+="    - ${line_num}: ${content}\n"
+            line_info+="    - ${line_num}: ${content}****"
         done <<< "$fail_lines"
-        
-        # 将当前Group的信息写入临时文件（格式：Group名|SN|文件路径|行号+内容）
+        # 将当前Group的信息写入临时文件（格式：Group名|SN|文件路径|fail内容）
         echo "${group_name}|${sn}|${csv_file}|${line_info}" >> "${AGG_TMP}"
     done
 
+    clear
+
     # 按Group聚合并输出结果
     if [[ $matched -eq 1 ]]; then
+        log_and_echo "----- [${CURRENT_TIME}] 执行搜索 -----"
         # 去重获取所有Group名（bash 3.x兼容）
         groups=$(cut -d'|' -f1 "$AGG_TMP" | sort | uniq)
         for group in $groups; do
@@ -99,29 +101,31 @@ while [[ $(date +%s) -lt ${END_TIME} ]]; do
             group_records=$(grep "^${group}|" "$AGG_TMP")
             # 取第一个记录的SN（同Group的SN一致）
             sn=$(echo "$group_records" | head -1 | cut -d'|' -f2)
-            # 拼接当前Group的所有文件路径（去重）
+            # 拼接当前Group的所有文件路径
             file_paths=$(echo "$group_records" | cut -d'|' -f3 | sort | uniq | tr '\n' ' ')
-            # 拼接当前Group的所有行号+内容（保留换行）
-            all_line_info=""
-            while read -r record; do
-                line_info=$(echo "$record" | cut -d'|' -f4)
-                all_line_info+="${line_info}"
-            done <<< "$group_records"
+            # 拼接当前Group的所有fail
+            all_line_info="$(echo "$group_records" | cut -d'|' -f4)"
             
-            # 格式化输出聚合结果（换行显示行号+内容）
+            # 格式化输出聚合结果
             log_and_echo "✅ 匹配到FAIL记录（${group}）："
             log_and_echo "   → SN号：${sn}"
             log_and_echo "   → 文件路径：${file_paths}"
             log_and_echo "   → 行号+内容："
-            # 输出换行后的行信息（解析\n为实际换行）
-            echo -e "${all_line_info}" | while read -r line; do
-                log_and_echo "${line}"
+            IFS='****' read -r -a tab <<< "$all_line_info"
+            for line in "${tab[@]}";do
+                info="$(echo $line| tr '\n' ' ')"
+                info1=$(echo "$info" | cut -d' ' -f1)
+                # log_and_echo "$info1"
+                if [[ $info1 ]]; then
+                    log_and_echo "$info"
+                fi
             done
             log_and_echo "----------------------------------------"
         done
     else
-        log_and_echo "❌ 本次未匹配到 FAIL 记录"
-        log_and_echo "----------------------------------------"
+        echo "----- [${CURRENT_TIME}] 执行搜索 -----"
+        echo "❌ 本次未匹配到 FAIL 记录"
+        echo "----------------------------------------"
     fi
 
     # 删除临时文件
