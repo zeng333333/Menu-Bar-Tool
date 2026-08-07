@@ -8,16 +8,14 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "A2C531F5-77F1-4AE9-8DEB-AD0C8ADAABFF"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "shTool/AppDelegate.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "257"
-            endingLineNumber = "257"
-            landmarkName = "resolveCommand(_:useShell:)"
-            landmarkType = "7">
+            endingLineNumber = "257">
             <Locations>
                <Location
                   uuid = "A2C531F5-77F1-4AE9-8DEB-AD0C8ADAABFF - 13ca908c8e6f716c"

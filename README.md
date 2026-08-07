@@ -38,6 +38,8 @@ shTool/
 ├── Base.lproj/           # 界面布局文件
 └── shTool.entitlements   # 应用权限配置
 shToolUITests/
+├── Tool/                 # 工具目录（脚本、RPC、MIX 等）
+├── AtlasSigner/          # Atlas 签名工具
 ├── config.json           # 菜单配置文件
-└── Tool_file/            # 测试脚本文件
+└── config_backup/        # 配置备份
 ```
