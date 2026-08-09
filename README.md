@@ -6,11 +6,9 @@ macOS 菜单栏工具应用，快速执行预配置的 shell 命令。
 
 - **托盘运行**：应用隐藏窗口，仅在菜单栏显示图标，点击图标展开菜单
 - **配置化菜单**：通过 `config.json` 文件配置菜单项，无需修改代码即可添加/删除命令
-- **命令执行**：支持执行任意 shell 命令，兼容管道、通配符等复杂命令
-- **超时控制**：可配置命令执行超时时间
-- **环境变量**：支持自定义环境变量
-- **工作目录**：可指定命令执行的工作目录
-- **结果提示**：执行完成后显示成功/失败提示
+- **命令执行**：通过 `zsh -c` 执行任意 shell 命令，兼容管道、通配符、重定向等语法
+- **资源目录为 CWD**：命令中可用 `$(pwd)` 引用 App Bundle 的 Resources 目录（Tool、AtlasSigner 等打包资源都在这里）
+- **结果提示**：执行失败时弹窗显示退出码和错误输出
 
 ## 配置文件格式
 
@@ -18,15 +16,15 @@ macOS 菜单栏工具应用，快速执行预配置的 shell 命令。
 [
     {
         "menu_name": "菜单显示名称",
-        "cmd": "执行的命令",
-        "cwd": "工作目录（可选）",
-        "env": { "KEY": "VALUE" },
-        "timeout": 30,
-        "shell": true,
-        "captureOutput": true
+        "cmd": "执行的 shell 命令"
     }
 ]
 ```
+
+> 命令通过 `/bin/zsh -c` 执行，`$(pwd)` 指向 App Bundle 的 Resources 目录。例如：
+> - 打开 App 内工具：`open $(pwd)/Tool/SchoonerCompiler-new`
+> - 直接执行脚本：`$(pwd)/Tool/start_Atlas2`
+> - 复合命令：`rm /tmp/a.txt ; echo ok >> /tmp/a.txt ; open $(pwd)/Tool/RPC_/FixtureContro`
 
 ## 项目结构
 
