@@ -26,8 +26,6 @@
 		AF4F590A2EF5AFF70030AE7D /* config.json in Resources */ = {isa = PBXBuildFile; fileRef = AF4F59092EF5AFF70030AE7D /* config.json */; };
 		AF4F590B2EF5AFF70030AE7D /* config.json in Resources */ = {isa = PBXBuildFile; fileRef = AF4F59092EF5AFF70030AE7D /* config.json */; };
 		AF4F590C2EF5AFF70030AE7D /* config.json in Resources */ = {isa = PBXBuildFile; fileRef = AF4F59092EF5AFF70030AE7D /* config.json */; };
-		AF4F59132EF5B7E00030AE7D /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AF4F59112EF5B7E00030AE7D /* Info.plist */; };
-		AF4F59142EF5B7E00030AE7D /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AF4F59112EF5B7E00030AE7D /* Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -265,7 +263,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AF4F59132EF5B7E00030AE7D /* Info.plist in Resources */,
 				AF4F59072EF5AFEB0030AE7D /* Tool.icns in Resources */,
 				AF4F590B2EF5AFF70030AE7D /* config.json in Resources */,
 			);
@@ -276,7 +273,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				AF059423300554D500B6E75A /* config_backup in Resources */,
-				AF4F59142EF5B7E00030AE7D /* Info.plist in Resources */,
 				AF059424300554D500B6E75A /* Tool in Resources */,
 				AF4F59082EF5AFEB0030AE7D /* Tool.icns in Resources */,
 				AF059425300554D500B6E75A /* AtlasSigner in Resources */,
@@ -473,11 +469,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = U3UMT8WQVD;
 				ENABLE_HARDENED_RUNTIME = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSMainStoryboardFile = Main;
-				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -502,11 +495,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = U3UMT8WQVD;
 				ENABLE_HARDENED_RUNTIME = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSMainStoryboardFile = Main;
-				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",

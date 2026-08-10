@@ -9,6 +9,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
     private var config: [[String: Any]] = []
 
+    /// 自定义入口点：手动创建 AppDelegate 实例并设为 delegate，确保 applicationDidFinishLaunching 被调用。
+    static func main() {
+        let app = NSApplication.shared
+        let delegate = AppDelegate()
+        app.delegate = delegate
+        app.run()
+    }
+
     // MARK: - 生命周期
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
@@ -18,16 +26,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         loadConfig()
 
-        statusItem = NSStatusBar.system.statusItem(withLength: 16)
+        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         guard let button = statusItem.button else { return }
 
-        // 设置托盘图标，加载失败降级为 emoji
-        if let icon = NSImage(named: "Tool") {
-            icon.size = NSSize(width: 16, height: 16)
+        // 设置托盘图标，三级兜底：Assets.car image set → Bundle 中的 Tool.icns 文件 → emoji 文字
+        let iconImage =
+            NSImage(named: "Tool")
+            ?? (Bundle.main.url(forResource: "Tool", withExtension: "icns").flatMap { NSImage(contentsOf: $0) })
+        if let icon = iconImage {
+            icon.size = NSSize(width: 18, height: 18)
             icon.isTemplate = false
             button.image = icon
             button.imagePosition = .imageOnly
-            button.imageScaling = .scaleNone
+            button.imageScaling = .scaleProportionallyUpOrDown
         } else {
             button.title = "🔧"
         }
