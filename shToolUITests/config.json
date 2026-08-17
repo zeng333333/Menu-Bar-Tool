@@ -4,28 +4,33 @@
         "cmd": "open $(pwd)/Tool/SchoonerCompiler-new"
     },
     {
-        "menu_name": "机台-out",
-        "cmd": "rm /tmp/FixtureControlCore.txt ; echo out >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureContro"
-    },
-    {
-        "menu_name": "机台-in",
-"cmd": "rm /tmp/FixtureControlCore.txt ; echo in >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureContro"
-    },
-    {
-        "menu_name": "机台-up",
-"cmd": "rm /tmp/FixtureControlCore.txt ; echo up >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureContro"
-    },
-    {
-        "menu_name": "机台-down",
-"cmd": "rm /tmp/FixtureControlCore.txt ; echo down >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureContro"
-    },
-    {
-        "menu_name": "机台-release",
-"cmd": "rm /tmp/FixtureControlCore.txt ; echo release >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureContro"
-    },
-    {
-        "menu_name": "机台-press",
-"cmd": "rm /tmp/FixtureControlCore.txt ; echo press >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureContro"
+        "menu_name": "机台控制",
+        "submenu": [
+            {
+                "menu_name": "out",
+                "cmd": "rm /tmp/FixtureControlCore.txt ; echo out >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureContro"
+            },
+            {
+                "menu_name": "in",
+                "cmd": "rm /tmp/FixtureControlCore.txt ; echo in >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureContro"
+            },
+            {
+                "menu_name": "up",
+                "cmd": "rm /tmp/FixtureControlCore.txt ; echo up >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureContro"
+            },
+            {
+                "menu_name": "down",
+                "cmd": "rm /tmp/FixtureControlCore.txt ; echo down >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureContro"
+            },
+            {
+                "menu_name": "release",
+                "cmd": "rm /tmp/FixtureControlCore.txt ; echo release >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureContro"
+            },
+            {
+                "menu_name": "press",
+                "cmd": "rm /tmp/FixtureControlCore.txt ; echo press >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureContro"
+            }
+        ]
     },
     {
         "menu_name": "打开-Atlas2软体路径",
@@ -44,24 +49,29 @@
         "cmd": "open $(pwd)/AtlasSigner/main"
     },
     {
-        "menu_name": "MIX-登陆MIX",
-"cmd": "rm /tmp/mix.txt ; echo 1 >>/tmp/mix.txt ; open  $(pwd)/Tool/mix/MIX"
-    },
-    {
-        "menu_name": "MIX-拉取完整代码",
-"cmd": "rm /tmp/mix.txt ; echo 2 >>/tmp/mix.txt ; open  $(pwd)/Tool/mix/MIX"
-    },
-    {
-        "menu_name": "MIX-拉取Log",
-"cmd": "rm /tmp/mix.txt ; echo 3 >>/tmp/mix.txt ; open  $(pwd)/Tool/mix/MIX"
-    },
-    {
-        "menu_name": "MIX-推送本地文件到MIX",
-"cmd": "rm /tmp/mix.txt ; echo 4 >>/tmp/mix.txt ; open  $(pwd)/Tool/mix/MIX"
-    },
-    {
-        "menu_name": "MIX-更新mixbundle",
-"cmd": "rm /tmp/mix.txt ; echo 5 >>/tmp/mix.txt ; open  $(pwd)/Tool/mix/MIX"
+        "menu_name": "MIX",
+        "submenu": [
+            {
+                "menu_name": "登陆MIX",
+                "cmd": "rm /tmp/mix.txt ; echo 1 >>/tmp/mix.txt ; open  $(pwd)/Tool/mix/MIX"
+            },
+            {
+                "menu_name": "拉取完整代码",
+                "cmd": "rm /tmp/mix.txt ; echo 2 >>/tmp/mix.txt ; open  $(pwd)/Tool/mix/MIX"
+            },
+            {
+                "menu_name": "拉取Log",
+                "cmd": "rm /tmp/mix.txt ; echo 3 >>/tmp/mix.txt ; open  $(pwd)/Tool/mix/MIX"
+            },
+            {
+                "menu_name": "推送本地文件到MIX",
+                "cmd": "rm /tmp/mix.txt ; echo 4 >>/tmp/mix.txt ; open  $(pwd)/Tool/mix/MIX"
+            },
+            {
+                "menu_name": "更新mixbundle",
+                "cmd": "rm /tmp/mix.txt ; echo 5 >>/tmp/mix.txt ; open  $(pwd)/Tool/mix/MIX"
+            }
+        ]
     },
     {
         "menu_name": "打开AtlasDataProcessorPlus",

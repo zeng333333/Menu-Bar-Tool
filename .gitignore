@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+
+# Xcode 用户状态（每次打开都会变，不应入库）
+xcuserdata/
+*.xcuserstate
+DerivedData/
+build/
+
+# 覆盖率产物
+*.profraw
+
+# WorkBuddy 项目数据
+.workbuddy/
