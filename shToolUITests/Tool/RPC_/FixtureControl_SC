@@ -1,0 +1,25 @@
+#!/bin/bash
+THIS_FILE=`basename "$0"`
+SHELL_FOLDER=$(cd "$(dirname "$0")";pwd)
+cd "$SHELL_FOLDER"
+
+CMD_FILE="/tmp/FixtureControlCore.txt"
+PLUGIN_DIR="$HOME/Library/Atlas2/Plugins"
+
+# # 自动拷贝 dylib 到插件目录
+# if [ -f "$SHELL_FOLDER/FixtureControl.l-dylib" ]; then
+#     mkdir -p "$PLUGIN_DIR"
+#     cp "$SHELL_FOLDER/FixtureControl.l-dylib" "$PLUGIN_DIR/"
+#     echo "已拷贝 FixtureControl.l-dylib 到 $PLUGIN_DIR"
+# else
+#     echo "警告: 未找到 FixtureControl.l-dylib，请先编译"
+# fi
+
+AtlasGroupProcess coreless ./FixtureControl_SC.lua
+
+echo -e '\033[;32;1m'
+echo "********************* 0.5秒后自动关闭此窗口 ************************\n\n"
+echo -e "\033[0m"
+#sleep 0.5
+osascript -e 'tell application "Terminal" to close (every window whose name contains "'"$THIS_FILE"'")' &
+exit

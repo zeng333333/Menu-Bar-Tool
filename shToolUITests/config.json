@@ -8,31 +8,31 @@
         "submenu": [
             {
                 "menu_name": "out",
-                "cmd": "rm /tmp/FixtureControlCore.txt ; echo out >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureContro"
+                "cmd": "rm /tmp/FixtureControlCore.txt ; echo out >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureControl_SC"
             },
             {
                 "menu_name": "in",
-                "cmd": "rm /tmp/FixtureControlCore.txt ; echo in >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureContro"
+                "cmd": "rm /tmp/FixtureControlCore.txt ; echo in >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureControl_SC"
             },
             {
                 "menu_name": "up",
-                "cmd": "rm /tmp/FixtureControlCore.txt ; echo up >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureContro"
+                "cmd": "rm /tmp/FixtureControlCore.txt ; echo up >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureControl_SC"
             },
             {
                 "menu_name": "down",
-                "cmd": "rm /tmp/FixtureControlCore.txt ; echo down >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureContro"
+                "cmd": "rm /tmp/FixtureControlCore.txt ; echo down >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureControl_SC"
             },
             {
                 "menu_name": "release",
-                "cmd": "rm /tmp/FixtureControlCore.txt ; echo release >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureContro"
+                "cmd": "rm /tmp/FixtureControlCore.txt ; echo release >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureControl_SC"
             },
             {
                 "menu_name": "press",
-                "cmd": "rm /tmp/FixtureControlCore.txt ; echo press >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureContro"
+                "cmd": "rm /tmp/FixtureControlCore.txt ; echo press >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureControl_SC"
             },
             {
-                "menu_name": "read_sensor",
-                "cmd": "rm /tmp/FixtureControlCore.txt ; echo read >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureContro"
+                "menu_name": "交互工具",
+                "cmd": "rm /tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureControl_SC"
             }
         ]
     },
