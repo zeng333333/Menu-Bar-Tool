@@ -29,24 +29,37 @@
             {
                 "menu_name": "press",
                 "cmd": "rm /tmp/FixtureControlCore.txt ; echo press >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureContro"
+            },
+            {
+                "menu_name": "read_sensor",
+                "cmd": "rm /tmp/FixtureControlCore.txt ; echo read >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureContro"
             }
         ]
     },
     {
-        "menu_name": "打开-Atlas2软体路径",
-        "cmd": "open ~/Library/Atlas2"
+        "menu_name": "Atlas2",
+        "submenu": [
+            {
+                "menu_name": "打开-Atlas2软体路径",
+                "cmd": "open ~/Library/Atlas2"
+            },
+            {
+                "menu_name": "打开-Atlas2-log路径",
+                "cmd": "open ~/Library/Logs/Atlas"
+            },
+            {
+                "menu_name": "打开-Atlas2",
+                "cmd": "$(pwd)/Tool/Common/start_Atlas2"
+            }
+        ]
     },
     {
-        "menu_name": "打开-Atlas2-log路径",
-        "cmd": "open ~/Library/Logs/Atlas"
-    },
-    {
-        "menu_name": "打开-Atlas2",
-        "cmd": "$(pwd)/Tool/start_Atlas2"
-    },
-    {
-        "menu_name": "打开-AtlasSignerTool",
+        "menu_name": "打开-Atlas签名工具",
         "cmd": "open $(pwd)/AtlasSigner/main"
+    },
+    {
+        "menu_name": "打开-B632运维工具",
+        "cmd": "open  $(pwd)/../../../shTool/B632Tool/Tool"
     },
     {
         "menu_name": "MIX",
@@ -74,20 +87,25 @@
         ]
     },
     {
-        "menu_name": "打开AtlasDataProcessorPlus",
-        "cmd": "open  $(pwd)/../../../shTool/AtlasDataProcessorPlus.app"
-    },
-    {
-        "menu_name": "打开MIX-Debug",
-        "cmd": "open  $(pwd)/../../../shTool/MIX-Debug.app"
-    },
-    {
-        "menu_name": "打开AtlasLogToCSV",
-        "cmd": "open  $(pwd)/../../../shTool/AtlasLogToCSV.app"
-    },
-    {
-        "menu_name": "打开SublimeText",
-        "cmd": "open  $(pwd)/../../../shTool/SublimeText.app"
+        "menu_name": "打开工具",
+        "submenu": [
+            {
+                "menu_name": "打开AtlasDataProcessorPlus-太阳",
+                "cmd": "open  $(pwd)/../../../shTool/AtlasDataProcessorPlus.app"
+            },
+            {
+                "menu_name": "打开MIX-Debug-木剑",
+                "cmd": "open  $(pwd)/../../../shTool/MIX-Debug.app"
+            },
+            {
+                "menu_name": "打开AtlasLogToCSV",
+                "cmd": "open  $(pwd)/../../../shTool/AtlasLogToCSV.app"
+            },
+            {
+                "menu_name": "打开SublimeText",
+                "cmd": "open  $(pwd)/../../../shTool/SublimeText.app"
+            }
+        ]
     },
     {
         "menu_name": "查看当前版本",

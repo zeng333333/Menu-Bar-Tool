@@ -14,6 +14,46 @@ FixtureControlCore.slotCount = 8
 local helper             = require("helper")
 
 
+------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------Common---------------------------------------------------------------------
+function fileRead(path)
+  if not path then return nil end
+  local file = io.open(path, "r")
+  if file then
+    data = file:read("*all")
+    file:close()
+    return data
+  end
+  return ""
+end
+
+function writeToFile(path, data, mode)
+    local fileMode = mode or "w"
+    local file, err = io.open(path, fileMode)
+    if file then
+        local success, writeErr = file:write(data)
+        file:close()
+        return success, writeErr
+    end
+    return nil, err
+end
+
+function show_message(title,message)
+    local title = title or "错误"
+    local message = message or "ERROR"
+    local info = string.format('osascript -e \'display alert "%s" message "%s" as critical\'',title,message)
+    os.execute("mkdir -p /tmp/zjx;touch /tmp/zjx/show_message.sh")
+    os.execute("rm /tmp/zjx/show_message.sh")
+    writeToFile("/tmp/zjx/show_message.sh",info)
+    os.execute("sh /tmp/zjx/show_message.sh")
+    return info
+end
+
+------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------Common---------------------------------------------------------------------
+
 function FixtureControlCore.init(rpcClientObjc, mutexPlugin)
     -- helper.LogInfo("======FixtureControl.init======")
     if rpcClientObjc then
@@ -245,39 +285,17 @@ function FixtureControlCore.T_up()
     return true
 end
 
-function fileRead(path)
-  if not path then return nil end
-  local file = io.open(path, "r")
-  if file then
-    data = file:read("*all")
-    file:close()
-    return data
-  end
-  return ""
+function FixtureControlCore.read()
+    if FixtureControlCore.rpcClientObjc == nil then return nil end
+    stateIn = FixtureControlCore.readTraySensor('in')
+    stateOut = FixtureControlCore.readTraySensor('out')
+    stateDown = FixtureControlCore.readTraySensor('down')
+    stateUp = FixtureControlCore.readTraySensor('up')
+    stateThrough = 1 and FixtureControlCore.readThroughSensor() or 0
+    info = "in Sensor:"..stateIn.."\n".."out Sensor:"..stateOut.."\n".."down Sensor:"..stateDown.."\n".."up Sensor:"..stateUp.."\n".."through Sensor:"..stateThrough.."\n"
+    show_message("read Sensor",info)
+    return true
 end
-
-function writeToFile(path, data, mode)
-    local fileMode = mode or "w"
-    local file, err = io.open(path, fileMode)
-    if file then
-        local success, writeErr = file:write(data)
-        file:close()
-        return success, writeErr
-    end
-    return nil, err
-end
-
-function show_message(title,message)
-    local title = title or "错误"
-    local message = message or "ERROR"
-    local info = string.format('osascript -e \'display alert "%s" message "%s" as critical\'',title,message)
-    os.execute("mkdir -p /tmp/zjx;touch /tmp/zjx/show_message.sh")
-    os.execute("rm /tmp/zjx/show_message.sh")
-    writeToFile("/tmp/zjx/show_message.sh",info)
-    os.execute("sh /tmp/zjx/show_message.sh")
-    return info
-end
-
 
 function main()
     cmd = "ping " .. FixtureControlCore.host .. " -t 1"
@@ -308,6 +326,8 @@ function main()
         FixtureControlCore.T_in()
     elseif ret =="out" then
         FixtureControlCore.T_out()
+    elseif ret =="read" then
+        FixtureControlCore.read()
     end
 end
 

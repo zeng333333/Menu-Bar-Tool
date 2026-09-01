@@ -1,0 +1,66 @@
+#!/bin/bash
+# Author：junjie.liu@cygia.com
+# date: 2026-07-18
+
+
+THIS_FILE=`basename "$0"`
+
+# 当前路径
+SHELL_FOLDER=$(cd "$(dirname "$0")";pwd)
+cd "$SHELL_FOLDER"
+
+
+clear
+clear
+
+
+./mysides add Library file://${HOME}/Library
+
+mkdir -p ${HOME}/Library/Logs/Atlas
+
+ln -s ${HOME}/Library/Logs/Atlas ${HOME}/Library/Logs/AtlasLog
+./mysides add AtlasLog file://${HOME}/Library/Logs/AtlasLog
+
+./mysides add tools file:///vault/JJL/tools
+./mysides add vault file:///vault
+
+sleep 0.2
+
+open -a Terminal ./Atlas2CSV/install.command
+# killall Finder
+
+
+echo ""
+echo ""
+echo "已添加侧边栏快捷访问路径"
+echo "已安装 Atlas2 SublimeText 插件"
+echo ""
+echo ""
+
+
+BIGHONKER="./BigHonkingText"
+FUNC="bighonker()"
+function bighonker()
+{
+    if [ "${SHOW_BANNERS}" != "FALSE" -a "${SHOW_BANNERS}" != "false" ] ; then
+        if [ "$BIGHONKER" != "" ] ; then
+            #if [ -x "$BIGHONKER" ] ; then
+                #echo "@@@@@@@@" "$BIGHONKER" "${1}" "${2}" "${3}" "${4}" "${5}" "${6}" "${7}" "${8}" "${9}" "${10}" "${11}" "${12}" "${13}" "${14}" "${15}"  "@@@@@@@@"
+                $BIGHONKER -R "${1}" "${2}" "${3}" "${4}" "${5}" "${6}" "${7}" "${8}" "${9}" "${10}" "${11}" "${12}" "${13}" "${14}" "${15}" 2> /dev/null &
+                BHT_PID=$!
+            #fi
+        fi
+    fi
+}
+
+
+
+# NSColor 标准名称： black、darkGray、lightGray、white、gray、red、green、blue、cyan、yellow、magenta、orange、purple、brown
+
+#           透明度   秒  横幅高度  占屏幕高度 颜色      显示文字
+bighonker -o 0.99 -p "2" -h 12% -y 86% -b green "   已添加侧边栏快捷访问路径   "
+bighonker -o 0.99 -p "2" -h 12% -y 66% -b green "   已安装 Atlas2 SublimeText 插件   "
+
+
+osascript -e 'tell application "Terminal" to close (every window whose name contains "'"$THIS_FILE"'")' &
+exit

@@ -38,18 +38,23 @@ func_sys_type()
 
 func_cp_mooncake_0()
 {
+    dir_name=`dirname "$0"`
     if [[ $1 == "arm64" ]];then
         if [[ -e "$dir_name/arm64/mooncake_0.so" ]]; then
             cp "$dir_name/arm64/mooncake_0.so" "/Users/gdlocal/Library/Atlas2/Modules/Mooncake/mooncake_0.so"
             cp "$dir_name/arm64/mooncake.lua" "/Users/gdlocal/Library/Atlas2/Modules/Mooncake/mooncake.lua"
-            debugPrint "$dir_name/arm64/mooncake_0.so" "/Users/gdlocal/Library/Atlas2/Modules/Mooncake/mooncake_0.so"
+            debugPrint "[替换mooncake成功] cp $dir_name/arm64/mooncake_0.so" "/Users/gdlocal/Library/Atlas2/Modules/Mooncake/mooncake_0.so"
+        else
+            debugPrint "[替换mooncake失败]"
         fi
     fi
     if [[ $1 == "x86_64" ]];then
         if [[ -e "$dir_name/x86_64/mooncake_0.so" ]]; then
             cp "$dir_name/x86_64/mooncake_0.so" "/Users/gdlocal/Library/Atlas2/Modules/Mooncake/mooncake_0.so"
             cp "$dir_name/x86_64/mooncake.lua" "/Users/gdlocal/Library/Atlas2/Modules/Mooncake/mooncake.lua"
-            debugPrint "cp $dir_name/x86_64/mooncake_0.so" "/Users/gdlocal/Library/Atlas2/Modules/Mooncake/mooncake_0.so"
+            debugPrint "[替换mooncake成功] cp $dir_name/x86_64/mooncake_0.so" "/Users/gdlocal/Library/Atlas2/Modules/Mooncake/mooncake_0.so"
+        else
+            debugPrint "[替换mooncake失败]"
         fi
     fi
 }
@@ -159,11 +164,12 @@ run() {
     ret=$(${AtlasGroupProcess} coreless "${entry}" "${plistPath}" 2>&1)
     # ${AtlasGroupProcess} coreless "${entry}" "${plistPath}" 2>&1
     # ret=$?
+    # debugPrint "compiler ret: "${ret}
 
     xattr -rc ${ATLAS2_FOLDER}
     echo "[xattr] xattr -rc ${ATLAS2_FOLDER}"
     
-    if echo "$ret" | grep -qi "Error:"; then
+    if echo "$ret" | grep -qi -e "Error:" -e "MooncakeYAMLParser"; then
         ${AtlasGroupProcess} coreless "${entry}" "${plistPath}" 2>&1
         ret=$?
         debugPrint "compiler ret: "${ret}
@@ -175,11 +181,12 @@ run() {
 }
 
 main() {
-    xattr -rx /Users/$(whoami)/Library/Atlas2
     ATLAS2_FOLDER="/Users/$(whoami)/Library/Atlas2/"
-    func_check_mooncake
     # 备份Atlas2
     func_backup_dir_if_exist ${ATLAS2_FOLDER}
+    #检查当前文件mooncake的架构，不一致，自动替换
+    func_check_mooncake
+    #编译
     run ${ATLAS2_FOLDER}
 }
 

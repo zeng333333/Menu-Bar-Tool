@@ -53,7 +53,7 @@ func_run_Atlas_sign()
   ')
   local normalized_paths
   normalized_paths=$(echo "$raw_file_paths" | xargs)
-	if [[ $normalized_paths == "123456" ]]; then
+	if [[ $normalized_paths == "suncode" ]]; then
 		rm ~/Library/Atlas2/encrypted.manifest 
 		rm ~/Library/Atlas2/encrypted.sig
 

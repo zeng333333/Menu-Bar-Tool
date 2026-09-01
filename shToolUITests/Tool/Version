@@ -15,3 +15,7 @@ echo 增加auto方法,双击后获取shTool路径，在Library/LaunchAgents添�
 echo 更新SchoonerCompiler方法，识别当前mac是x86还是RAM64，自动替换对应mooncake_0.so
 echo 优化AtlasSigner使用，在Tool中，增加密码
 echo 更新SchoonerCompiler，编译后增加xattr -rc
+echo 更新SchoonerCompiler，先备份后，再编译
+echo 更新SchoonerCompiler，替换文件失败mooncake_0.so，报错
+ehco 更新shTool，增加工具分组
+ehco 机台控制，增加读取传感器状态

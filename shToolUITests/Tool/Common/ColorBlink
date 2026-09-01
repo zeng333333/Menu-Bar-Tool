@@ -1,0 +1,70 @@
+#!/bin/bash
+THIS_FILE=`basename "$0"`
+
+# 当前路径
+SHELL_FOLDER=$(cd "$(dirname "$0")";pwd)
+cd "$SHELL_FOLDER"
+
+MAX=10
+MIN=-4
+
+POS=0
+NEG=$(( 0 - ${POS} ))
+
+i=${MAX}
+THE_PID1=""
+THE_PID2=""
+j=${NEG}
+
+while [ 1 ] ; do
+    ${SHELL_FOLDER}/BigHonkingText -p 1 -h 20% -y ${i}% -o 0 "                " -f red2>/dev/null &
+    THE_PID1=$!
+    kill $THE_PID8 2>/dev/null
+    sleep 1.75
+    i=$(( $i + $j ))
+
+    ${SHELL_FOLDER}/BigHonkingText -p 1 -h 20% -y ${i}% -o 0 "                " -f green 2>/dev/null &
+    THE_PID2=$!
+    kill $THE_PID1 2>/dev/null
+    sleep 1.75
+    i=$(( $i + $j))
+
+    ${SHELL_FOLDER}/BigHonkingText -p 1 -h 20% -y ${i}% -o 0 "                " -f cyan 2>/dev/null &
+    THE_PID3=$!
+    kill $THE_PID2 2>/dev/null
+    sleep 1.75
+    i=$(( $i + $j))
+
+    ${SHELL_FOLDER}/BigHonkingText -p 1 -h 20% -y ${i}% -o 0 "                " -f yellow 2>/dev/null &
+    THE_PID4=$!
+    kill $THE_PID3 2>/dev/null
+    sleep 1.75
+    i=$(( $i + $j))
+
+    ${SHELL_FOLDER}/BigHonkingText -p 1 -h 20% -y ${i}% -o 0 "                " -f magenta 2>/dev/null &
+    THE_PID5=$!
+    kill $THE_PID4 2>/dev/null
+    sleep 1.75
+    i=$(( $i + $j))
+
+    ${SHELL_FOLDER}/BigHonkingText -p 1 -h 20% -y ${i}% -o 0 "                " -f orange 2>/dev/null &
+    THE_PID6=$!
+    kill $THE_PID5 2>/dev/null
+    sleep 1.75
+    i=$(( $i + $j))
+
+    ${SHELL_FOLDER}/BigHonkingText -p 1 -h 20% -y ${i}% -o 0 "                " -f purple 2>/dev/null &
+    THE_PID7=$!
+    kill $THE_PID6 2>/dev/null
+    sleep 1.75
+    i=$(( $i + $j))
+
+    ${SHELL_FOLDER}/BigHonkingText -p 1 -h 20% -y ${i}% -o 0 "                " -f black 2>/dev/null &
+    THE_PID8=$!
+    kill $THE_PID7 2>/dev/null
+    sleep 1.75
+    i=$(( $i + $j))
+
+done 2>/dev/null
+
+exit 0
