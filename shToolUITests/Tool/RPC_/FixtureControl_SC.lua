@@ -6,7 +6,7 @@
 ------------------------------------------------------------------------------------------------------------------------------------------
 local fc = nil
 local PLUGIN_NAME = "FixtureControl_SC"
-
+local single_flag = "false"
 ------------------------------------------------------------------ Common ------------------------------------------------------------------
 function show_message(title, message)
     local title = title or "提示"
@@ -41,7 +41,7 @@ end
 
 ------------------------------------------------------------------ Actions ------------------------------------------------------------------
 local DEFAULT_PORT = "/dev/cu.usbserial-ECB"
---local DEFAULT_PORT = "/dev/ttys008"
+-- local DEFAULT_PORT = "/dev/ttys008"
 
 function action_init(portPath)
     local port = portPath or DEFAULT_PORT
@@ -112,6 +112,57 @@ function action_read_sensors()
     print("=================================")
 end
 
+-- 简单按 \n 切分字符串（返回数组），不依赖环境是否内置 string.split
+local function splitLines(s)
+    local lines = {}
+    if not s then return lines end
+    for line in (s .. "\n"):gmatch("(.-)\n") do
+        table.insert(lines, line)
+    end
+    return lines
+end
+
+-- MIX8 多设备并行二维码解码。
+-- decode_mix8(control) 返回纯文本，每台设备一行：
+--     "<设备号>:<状态>[:<内容>]"    （状态: OK / FAIL_CONN / FAIL_DECODE / FAIL_TIMEOUT）
+-- 这里把文本切成 Lua 的"自然表"（按设备号索引），便于直接访问。
+function action_decode_mix8(control)
+    local ctrl = control or "1*2*3*4*5*6*7*8"
+    print("decode_mix8 开始(真实并行): " .. ctrl)
+    -- fc = Atlas.loadPlugin(FixtureControl_SC)
+    local ret = fc.decode_mix8(ctrl)
+    print(single_flag)
+    if single_flag == "true" then
+        io.write("\n> ")
+        io.flush()
+        local input = io.read("*line")
+    end
+    -- printResult("decode_mix8 " .. ctrl)
+
+    -- local table_out = {}
+    -- for _, line in ipairs(splitLines(ret)) do
+    --     local no, state, content = string.match(line or "", "^(%-?%d+):([^:]*):?(.*)$")
+    --     if no and state then
+    --         local idx = tonumber(no)
+    --         table_out[idx] = (state == "OK")
+    --             and { ok = true,                    content = (content or "") }
+    --             or  { ok = false, error = state,    content = (content or "") }
+    --     end
+    -- end
+
+    -- print("decode_mix8 Lua 表(按设备号索引):")
+    -- for i = 1, 8 do
+    --     local v = table_out[i]
+    --     if v then
+    --         print(string.format("  device %d => ok=%s  %s%s",
+    --             i, tostring(v.ok),
+    --             (v.error and (v.error .. "  ") or ""),
+    --             (v.content and v.content or "")))
+    --     end
+    -- end
+    return table_out
+end
+
 ------------------------------------------------------------------ Command Dispatch ------------------------------------------------------------------
 function dispatch(cmd)
     cmd = trim(cmd)
@@ -161,6 +212,11 @@ function dispatch(cmd)
         -- 格式: send frontsensor?
         local rawCmd = string.sub(cmd, 6)
         action_send(rawCmd)
+    elseif cmd == "mix8" then
+        action_decode_mix8("1*2*3*4*5*6*7*8")
+    elseif string.sub(cmd, 1, 12) == "decode_mix8 " then
+        -- 格式: decode_mix8 1*3*5
+        action_decode_mix8(string.sub(cmd, 12))
     else
         -- 未知指令，直接作为串口指令发送
         action_send(cmd)
@@ -186,6 +242,7 @@ function printHelp()
     print("  help              查询电控板指令列表")
     print("  reset             复位LED")
     print("  send <cmd>       发送任意串口指令")
+    print("  mix8             并行解码全部 8 台 MIX8 二维码 (decode_mix8 1*2*3*)")
     print("  in?/out?/down?/up?/frontsensor?/rearsensor?  查询单个传感器")
     print("  exit              退出交互模式")
     print("============================================")
@@ -201,7 +258,6 @@ function main()
     print("插件 " .. PLUGIN_NAME .. " 加载成功")
 
     action_init()
-    single_flag = "false"
     --  从文件读取指令
     local cmdFile = "/tmp/FixtureControlCore.txt"
     local fileCmd = fileRead(cmdFile)
@@ -238,5 +294,3 @@ function main()
         end
     end
 end
-
---main()

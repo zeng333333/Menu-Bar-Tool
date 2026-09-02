@@ -31,6 +31,10 @@
                 "cmd": "rm /tmp/FixtureControlCore.txt ; echo press >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureControl_SC"
             },
             {
+                "menu_name": "scanner",
+                "cmd": "rm /tmp/FixtureControlCore.txt ; echo mix8 >>/tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureControl_SC"
+            },
+            {
                 "menu_name": "交互工具",
                 "cmd": "rm /tmp/FixtureControlCore.txt ; open  $(pwd)/Tool/RPC_/FixtureControl_SC"
             }

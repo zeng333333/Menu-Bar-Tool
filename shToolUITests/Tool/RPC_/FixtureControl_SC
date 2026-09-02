@@ -20,6 +20,6 @@ AtlasGroupProcess coreless ./FixtureControl_SC.lua
 echo -e '\033[;32;1m'
 echo "********************* 0.5秒后自动关闭此窗口 ************************\n\n"
 echo -e "\033[0m"
-#sleep 0.5
+# sleep 10
 osascript -e 'tell application "Terminal" to close (every window whose name contains "'"$THIS_FILE"'")' &
 exit
