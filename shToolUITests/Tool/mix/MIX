@@ -2,248 +2,386 @@
 # Created at: 12/25/2025
 # Author: Jingxin Zeng (cn33331@163.com)
 
-# 定义获取当前文件路径
+# ========== 颜色定义 ==========
+RED=$(tput setaf 1)
+GREEN=$(tput setaf 2)
+YELLOW=$(tput setaf 3)
+BLUE=$(tput setaf 4)
+MAGENTA=$(tput setaf 5)
+CYAN=$(tput setaf 6)
+RESET=$(tput sgr0)
+
+# ========== 路径定义 ==========
 THIS_FILE=`basename "$0"`
 dir_name=`dirname "$0"`
-# echo $dir_name
-# echo $THIS_FILE
-# echo ${dir_name}/${THIS_FILE}
 SCRIPT_PATH="$dir_name/ip_selector.scpt"
 SCRIPT_PATH_PY="$dir_name/ip_selector_tk.py"
 
 echo "不同项目,需要配置不同的ip_selector内容"
+
+# 通道→IP映射（备用slot模式使用，不同项目请配置此函数）
+# 返回格式: IP-version（如 111.111.111.32-mix8）
 fun_get_ip()
 {
-	slot=$1
-	ip=$(($slot + 31)) 
-	echo "111.111.111.$ip"
+    slot=$1
+    ip=$(($slot + 31))
+    echo "111.111.111.$ip-mix8"
 }
 
+# ========== osascript 命令封装 ==========
 func_run_cmd2(){
-	cmd="$1 $2"
- 	echo $cmd
-	osascript -e "tell app \"Terminal\" to do script \"${cmd}\""
+    cmd="$1 $2"
+    echo $cmd
+    osascript -e "tell app \"Terminal\" to do script \"${cmd}\""
 }
-
 func_run_cmd3(){
-	cmd="$1 $2 $3"
- 	echo $cmd
-	osascript -e "tell app \"Terminal\" to do script \"${cmd}\""
+    cmd="$1 $2 $3"
+    echo $cmd
+    osascript -e "tell app \"Terminal\" to do script \"${cmd}\""
 }
-
 func_run_cmd4(){
-	cmd="$1 $2 $3 $4"
- 	echo $cmd
-	osascript -e "tell app \"Terminal\" to do script \"${cmd}\""
+    cmd="$1 $2 $3 $4"
+    echo $cmd
+    osascript -e "tell app \"Terminal\" to do script \"${cmd}\""
 }
-
 func_run_cmd5(){
-	cmd="$1 $2 $3 $4 $5"
- 	echo $cmd
-	osascript -e "tell app \"Terminal\" to do script \"${cmd}\""
+    cmd="$1 $2 $3 $4 $5"
+    echo $cmd
+    osascript -e "tell app \"Terminal\" to do script \"${cmd}\""
 }
-
 func_run_cmd6(){
-	cmd="$1 $2 $3 $4 $5 $6"
- 	echo $cmd
-	osascript -e "tell app \"Terminal\" to do script \"${cmd}\""
+    cmd="$1 $2 $3 $4 $5 $6"
+    echo $cmd
+    osascript -e "tell app \"Terminal\" to do script \"${cmd}\""
 }
-
-func_run_chmod(){
-	# ==========给文件777权限==========
-	script_path="${dir_name}/chmod.sh"
-	# IP_SELECTION=$(osascript "$SCRIPT_PATH")
-	IP_SELECTION=$(python3 "$SCRIPT_PATH_PY")
-	# 处理结果
-	if [ -z "$IP_SELECTION" ]; then
-	    echo "未选择任何IP！"
-	    exit 1
-	fi
-	# 拆分IP列表并输出
-	IFS=',' read -ra IPS <<< "$IP_SELECTION"
-	echo -e "\n✅ 选中的IP列表："
-	for ip in "${IPS[@]}"; do
-	    clean_ip=$(echo "$ip" | xargs)
-	    echo "- $clean_ip"
-	    cmd="${script_path} ${clean_ip}"
-	    func_run_cmd2 ${cmd}
-	done
-}
-
 
 func_check_IP()
 {
     file $1 | grep -q "." && echo "YES" || echo "NO"
 }
 
+# ========== ip_selector 模式（主路径，config.json触发）==========
+
+func_run_chmod(){
+    script_path="${dir_name}/chmod.sh"
+    IP_SELECTION=$(python3 "$SCRIPT_PATH_PY")
+    if [ -z "$IP_SELECTION" ]; then
+        echo "未选择任何IP！"
+        exit 1
+    fi
+    IFS=',' read -ra IPS <<< "$IP_SELECTION"
+    echo -e "\n✅ 选中的IP列表："
+    for ip in "${IPS[@]}"; do
+        clean_ip=$(echo "$ip" | xargs)
+        echo "- $clean_ip"
+        cmd="${script_path} ${clean_ip}"
+        func_run_cmd2 ${cmd}
+    done
+}
+
 func_run_scp_push(){
-	# ==========scp==========
-	script_path="${dir_name}/auto_scp.sh"
-	echo "例子：本地mix文件夹内容参考下面，保留需要修改的文件power.py以及这个文件所在的文件夹。脚本会把这个文件更新到远程mix对应的路径"
-	echo '''mix
+    script_path="${dir_name}/auto_scp.sh"
+    echo "例子：本地mix文件夹内容参考下面，保留需要修改的文件power.py以及这个文件所在的文件夹。脚本会把这个文件更新到远程mix对应的路径"
+    echo '''mix
 |____addon
 | |____test_function
 | | |____power.py'''
-	while true; do
-		# IP_SELECTION=$(osascript "$SCRIPT_PATH")
-		IP_SELECTION=$(python3 "$SCRIPT_PATH_PY")
-		ret=$(func_check_IP "$IP_SELECTION")
-		if [[ ${ret} == "NO" ]]; then
-		    echo "未选择任何IP！"
-		    break
-		fi
-		if [[ ${ret} == "YES" ]]; then
-			# 拆分IP列表并输出
-			IFS=',' read -ra IPS <<< "$IP_SELECTION"
-			echo -e "\n✅ 选中的IP列表："
-			for ip in "${IPS[@]}"; do
-			    clean_ip=$(echo "$ip" | xargs)
-			    echo "- $clean_ip"
-			done
-			read -p "请输入本地mix文件路径:" local_file
-			info=$(echo $local_file | grep -n "/mix")
-			if [[ $info ]]; then
-			    mix_path="/mix"
-				read -p "是否重启，如果需要重启，请填入R或r或y或Y:" RFlag
-				for ip in "${IPS[@]}"; do
-				    clean_ip=$(echo "$ip" | xargs)
-					cmd="${script_path} ${local_file} ${mix_path} ${clean_ip} ${RFlag}"
-					func_run_cmd5 ${cmd}
-				done
-				break
-			else
-				echo "请输入正确mix文件夹路径"
-				break
-			fi
-		fi
-	done
-	exit 0
+    while true; do
+        IP_SELECTION=$(python3 "$SCRIPT_PATH_PY")
+        ret=$(func_check_IP "$IP_SELECTION")
+        if [[ ${ret} == "NO" ]]; then
+            echo "未选择任何IP！"
+            break
+        fi
+        if [[ ${ret} == "YES" ]]; then
+            IFS=',' read -ra IPS <<< "$IP_SELECTION"
+            echo -e "\n✅ 选中的IP列表："
+            for ip in "${IPS[@]}"; do
+                clean_ip=$(echo "$ip" | xargs)
+                echo "- $clean_ip"
+            done
+            read -p "请输入本地mix文件路径:" local_file
+            info=$(echo $local_file | grep -n "/mix")
+            if [[ $info ]]; then
+                mix_path="/mix"
+                read -p "是否重启，如果需要重启，请填入R或r或y或Y:" RFlag
+                for ip in "${IPS[@]}"; do
+                    clean_ip=$(echo "$ip" | xargs)
+                    cmd="${script_path} ${local_file} ${mix_path} ${clean_ip} ${RFlag}"
+                    func_run_cmd5 ${cmd}
+                done
+                break
+            else
+                echo "请输入正确mix文件夹路径"
+                break
+            fi
+        fi
+    done
+    exit 0
 }
 
 func_run_scp_get_log(){
-	script_path="${dir_name}/auto_scp_get.sh"
-	echo "获取mixlog默认放到${HOME}/Downloads文件夹下"
-	mix_path="/var/tmp/mix"
-	# IP_SELECTION=$(osascript "$SCRIPT_PATH")
-	IP_SELECTION=$(python3 "$SCRIPT_PATH_PY")
-	# 处理结果
-	if [ -z "$IP_SELECTION" ]; then
-	    echo "未选择任何IP！"
-	    exit 1
-	fi
-	# 拆分IP列表并输出
-	IFS=',' read -ra IPS <<< "$IP_SELECTION"
-	echo -e "\n✅ 选中的IP列表："
-	for ip in "${IPS[@]}"; do
-	    clean_ip=$(echo "$ip" | xargs)
-	    echo "- $clean_ip"
-	    local_file="${HOME}/Downloads/${clean_ip}_mixlog_$(date +'%Y-%m-%d_%H-%M-%S')"
-	    cmd="${script_path} ${clean_ip} ${mix_path} ${local_file}"
-	    func_run_cmd4 ${cmd}
-	done
+    script_path="${dir_name}/auto_scp_get.sh"
+    echo "获取mixlog默认放到${HOME}/Downloads文件夹下"
+    mix_path="/var/tmp/mix"
+    IP_SELECTION=$(python3 "$SCRIPT_PATH_PY")
+    if [ -z "$IP_SELECTION" ]; then
+        echo "未选择任何IP！"
+        exit 1
+    fi
+    IFS=',' read -ra IPS <<< "$IP_SELECTION"
+    echo -e "\n✅ 选中的IP列表："
+    for ip in "${IPS[@]}"; do
+        clean_ip=$(echo "$ip" | xargs)
+        echo "- $clean_ip"
+        ip_only=${clean_ip%%-*}
+        local_file="${HOME}/Downloads/${ip_only}_mixlog_$(date +'%Y-%m-%d_%H-%M-%S')"
+        cmd="${script_path} ${clean_ip} ${mix_path} ${local_file}"
+        func_run_cmd4 ${cmd}
+    done
 }
 
 func_run_scp_get_mix(){
-	script_path="${dir_name}/auto_scp_get.sh"
-	echo "获取整个mix文件夹，默认放到${HOME}/Downloads文件夹下"
-	mix_path="/mix"
-	# IP_SELECTION=$(osascript "$SCRIPT_PATH")
-	IP_SELECTION=$(python3 "$SCRIPT_PATH_PY")
-	# 处理结果
-	if [ -z "$IP_SELECTION" ]; then
-	    echo "未选择任何IP！"
-	    exit 1
-	fi
-	# 拆分IP列表并输出
-	IFS=',' read -ra IPS <<< "$IP_SELECTION"
-	echo -e "\n✅ 选中的IP列表："
-	for ip in "${IPS[@]}"; do
-	    clean_ip=$(echo "$ip" | xargs)
-	    echo "- $clean_ip"
-	    local_file="${HOME}/Downloads/${clean_ip}_mix_code_$(date +'%Y-%m-%d_%H-%M-%S')"
-	    cmd="${script_path} ${clean_ip} ${mix_path} ${local_file}"
-	    func_run_cmd4 ${cmd}
-	done
+    script_path="${dir_name}/auto_scp_get.sh"
+    echo "获取整个mix文件夹，默认放到${HOME}/Downloads文件夹下"
+    mix_path="/mix"
+    IP_SELECTION=$(python3 "$SCRIPT_PATH_PY")
+    if [ -z "$IP_SELECTION" ]; then
+        echo "未选择任何IP！"
+        exit 1
+    fi
+    IFS=',' read -ra IPS <<< "$IP_SELECTION"
+    echo -e "\n✅ 选中的IP列表："
+    for ip in "${IPS[@]}"; do
+        clean_ip=$(echo "$ip" | xargs)
+        echo "- $clean_ip"
+        ip_only=${clean_ip%%-*}
+        local_file="${HOME}/Downloads/${ip_only}_mix_code_$(date +'%Y-%m-%d_%H-%M-%S')"
+        cmd="${script_path} ${clean_ip} ${mix_path} ${local_file}"
+        func_run_cmd4 ${cmd}
+    done
 }
+
+# ========== slot 模式（备用路径，交互菜单触发）==========
+
+func_run_chmod_slot(){
+    script_path="${dir_name}/chmod.sh"
+    echo "输入数字N，表示选择第N通道。如:8,表示第8通道"
+    echo "输入A+数字N，表示选择1~N通道。如:A8,表示选择1~8通道"
+    while true; do
+        read -p "请输入需要操作的通道数:" slot
+        if [[ $slot == *[aA]* ]];then
+            num=$(echo "$slot" | tr -d -c '0-9')
+            if [[ -z "$num" || ! "$num" =~ ^[0-9]+$ ]]; then
+                test=1
+            else
+                for (( i = 1; i <= $num; i++ )); do
+                    IP=$(fun_get_ip $i)
+                    cmd="${script_path} ${IP}"
+                    func_run_cmd2 ${cmd}
+                done
+                break
+            fi
+        else
+            if [[ "$slot" =~ ^[0-9]+$ ]]; then
+                IP=$(fun_get_ip $slot)
+                cmd="${script_path} ${IP}"
+                func_run_cmd2 ${cmd}
+                break
+            fi
+        fi
+    done
+}
+
+func_run_scp_put_slot(){
+    script_path="${dir_name}/auto_scp.sh"
+    echo "输入数字N，表示选择第N通道。如:8,表示第8通道"
+    echo "输入A+数字N，表示选择1~N通道。如:A8,表示选择1~8通道"
+    while true; do
+        read -p "请输入需要操作的通道数:" slot
+        if [[ $slot == *[aA]* ]];then
+            num=$(echo "$slot" | tr -d -c '0-9')
+            if [[ -z "$num" || ! "$num" =~ ^[0-9]+$ ]]; then
+                test=1
+            else
+                read -p "请输入本地文件路径:" local_file
+                read -p "请输入mix路径:" mix_path
+                read -p "是否重启:" RFlag
+                for (( i = 1; i <= $num; i++ )); do
+                    IP=$(fun_get_ip $i)
+                    cmd="${script_path} ${local_file} ${mix_path} ${IP} ${RFlag}"
+                    func_run_cmd5 ${cmd}
+                done
+                break
+            fi
+        else
+            if [[ "$slot" =~ ^[0-9]+$ ]]; then
+                IP=$(fun_get_ip $slot)
+                read -p "请输入本地文件路径:" local_file
+                read -p "请输入mix路径:" mix_path
+                read -p "是否重启:" RFlag
+                cmd="${script_path} ${local_file} ${mix_path} ${IP} ${RFlag}"
+                func_run_cmd5 ${cmd}
+                break
+            fi
+        fi
+    done
+}
+
+func_run_scp_get_log_slot(){
+    script_path="${dir_name}/auto_scp_get.sh"
+    echo "获取mixlog默认放到${HOME}/Downloads文件夹下"
+    echo "输入数字N，表示选择第N通道。如:8,表示第8通道"
+    echo "输入A+数字N，表示选择1~N通道。如:A8,表示选择1~8通道"
+    mix_path="/var/tmp/mix"
+    while true; do
+        read -p "请输入需要操作的通道数:" slot
+        if [[ $slot == *[aA]* ]];then
+            num=$(echo "$slot" | tr -d -c '0-9')
+            if [[ -z "$num" || ! "$num" =~ ^[0-9]+$ ]]; then
+                test=1
+            else
+                for (( i = 1; i <= $num; i++ )); do
+                    IP=$(fun_get_ip $i)
+                    local_file="${HOME}/Downloads/slot${i}_mixlog_$(date +'%Y-%m-%d_%H-%M-%S')"
+                    cmd="${script_path} ${IP} ${mix_path} ${local_file}"
+                    func_run_cmd4 ${cmd}
+                done
+                break
+            fi
+        else
+            if [[ "$slot" =~ ^[0-9]+$ ]]; then
+                IP=$(fun_get_ip $slot)
+                local_file="${HOME}/Downloads/slot${slot}_mixlog_$(date +'%Y-%m-%d_%H-%M-%S')"
+                cmd="${script_path} ${IP} ${mix_path} ${local_file}"
+                func_run_cmd4 ${cmd}
+                break
+            fi
+        fi
+    done
+}
+
+func_run_scp_get_mix_slot(){
+    script_path="${dir_name}/auto_scp_get.sh"
+    echo "获取整个mix文件夹，默认放到${HOME}/Downloads文件夹下"
+    echo "输入数字N，表示选择第N通道。如:8,表示第8通道"
+    echo "输入A+数字N，表示选择1~N通道。如:A8,表示选择1~8通道"
+    mix_path="/mix"
+    while true; do
+        read -p "请输入需要操作的通道数:" slot
+        if [[ $slot == *[aA]* ]];then
+            num=$(echo "$slot" | tr -d -c '0-9')
+            if [[ -z "$num" || ! "$num" =~ ^[0-9]+$ ]]; then
+                test=1
+            else
+                for (( i = 1; i <= $num; i++ )); do
+                    IP=$(fun_get_ip $i)
+                    local_file="${HOME}/Downloads/slot${i}_mix_code_$(date +'%Y-%m-%d_%H-%M-%S')"
+                    cmd="${script_path} ${IP} ${mix_path} ${local_file}"
+                    func_run_cmd4 ${cmd}
+                done
+                break
+            fi
+        else
+            if [[ "$slot" =~ ^[0-9]+$ ]]; then
+                IP=$(fun_get_ip $slot)
+                local_file="${HOME}/Downloads/slot${slot}_mix_code_$(date +'%Y-%m-%d_%H-%M-%S')"
+                cmd="${script_path} ${IP} ${mix_path} ${local_file}"
+                func_run_cmd4 ${cmd}
+                break
+            fi
+        fi
+    done
+}
+
+# ========== 共享（slot模式，两种路径都用）==========
 
 func_run_update_mixbundle(){
-	# ==========scp==========
-	script_path="${dir_name}/Update"
-	echo "输入数字N，表示选择第N通道。如:8,表示第8通道"
-	echo "输入A+数字N，表示选择1~N通道。如:A8,表示选择1~8通道"
-	while true; do
-		read -p "请输入需要操作的通道数:" slot
-		if [[ $slot == *[aA]* ]];then
-			num=$(echo "$slot" | tr -d -c '0-9')
-			if [[ -z "$num" || ! "$num" =~ ^[0-9]+$ ]]; then
-				test=1
-			else
-				# echo $num
-				read -p "请输入mixbundle路径:" mixbundle_path
-				for (( i = 1; i <= $num; i++ )); do
-					# echo $i
-					IP=$(fun_get_ip $i)
-					cmd="${script_path} ${mixbundle_path} ${IP}"
-					func_run_cmd3 ${cmd}
-				done
-				break
-			fi
-		else
-			if [[ "$slot" =~ ^[0-9]+$ ]]; then
-				# echo $slot
-				read -p "请输入mixbundle路径:" mixbundle_path
-				IP=$(fun_get_ip $slot)
-				cmd="${script_path} ${mixbundle_path} ${IP}"
-				func_run_cmd3 ${cmd}
-				break
-			fi
-		fi
-	done
-	# exit 0
+    script_path="${dir_name}/Update"
+    echo "输入数字N，表示选择第N通道。如:8,表示第8通道"
+    echo "输入A+数字N，表示选择1~N通道。如:A8,表示选择1~8通道"
+    while true; do
+        read -p "请输入需要操作的通道数:" slot
+        if [[ $slot == *[aA]* ]];then
+            num=$(echo "$slot" | tr -d -c '0-9')
+            if [[ -z "$num" || ! "$num" =~ ^[0-9]+$ ]]; then
+                test=1
+            else
+                read -p "请输入mixbundle路径:" mixbundle_path
+                for (( i = 1; i <= $num; i++ )); do
+                    IP=$(fun_get_ip $i)
+                    IP_clean=${IP%%-*}
+                    cmd="${script_path} ${mixbundle_path} ${IP_clean}"
+                    func_run_cmd3 ${cmd}
+                done
+                break
+            fi
+        else
+            if [[ "$slot" =~ ^[0-9]+$ ]]; then
+                read -p "请输入mixbundle路径:" mixbundle_path
+                IP=$(fun_get_ip $slot)
+                IP_clean=${IP%%-*}
+                cmd="${script_path} ${mixbundle_path} ${IP_clean}"
+                func_run_cmd3 ${cmd}
+                break
+            fi
+        fi
+    done
 }
 
+# ========== 备用交互菜单 ==========
 
-# ret=$(osascript -e '
-#     try
-#         display dialog ¬
-#             "是否继续往下进行" ¬
-#             buttons {"取消", "确认"} ¬
-#             default button "确认"
-#         # 用户点击确认时返回 1（保持你的需求）
-#         return 1
-#     on error  # 用户点击取消/关闭对话框时触发
-#         # 统一返回类型为字符串（避免类型不一致问题）
-#         return ""
-#     end try
-# ')
+show_menu() {
+    clear
+    echo "${CYAN}▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂"
+    echo "                            ${MAGENTA}不同项目，使用前先进行ip配置${CYAN}"
+    echo "▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂${RESET}"
+    echo "${YELLOW}选择方法"
+    echo "1 chmod"
+    echo "2 推送文件或文件夹到MIX"
+    echo "3 从MIX拉取log"
+    echo "4 拉取MIX文件夹"
+    echo "5 更新mixbundle"
+    echo "0 退出脚本${RESET}"
+    echo "${CYAN}▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂${RESET}"
+}
 
-# if [[ "$ret" == "1" ]]; then
-# 	echo ok
-# fi
-case_type=$(cat /tmp/mix.txt)
-echo $case_type
+# ========== 入口逻辑 ==========
 
-if [ "$case_type" = "1" ]; then
-    echo "==========给文件777权限=========="
-    func_run_chmod
-fi
+case_type=$(cat /tmp/mix.txt 2>/dev/null)
 
-if [ "$case_type" = "2" ]; then
-    echo "==========拉取mix代码到Downloads=========="
-    func_run_scp_get_mix
-fi
-
-if [ "$case_type" = "3" ]; then
-    echo "==========拉取mixlog到Downloads=========="
-    func_run_scp_get_log
-fi
-
-if [ "$case_type" = "4" ]; then
-    echo "==========推送本地文件到MIX=========="
-    func_run_scp_push
-fi
-
-if [ "$case_type" = "5" ]; then
-    echo "===========更新MIXbundle=========="
-    func_run_update_mixbundle
+if [ -n "$case_type" ]; then
+    # 主路径：config.json → /tmp/mix.txt → ip_selector模式
+    echo $case_type
+    if [ "$case_type" = "1" ]; then
+        echo "==========给文件777权限=========="
+        func_run_chmod
+    elif [ "$case_type" = "2" ]; then
+        echo "==========拉取mix代码到Downloads=========="
+        func_run_scp_get_mix
+    elif [ "$case_type" = "3" ]; then
+        echo "==========拉取mixlog到Downloads=========="
+        func_run_scp_get_log
+    elif [ "$case_type" = "4" ]; then
+        echo "==========推送本地文件到MIX=========="
+        func_run_scp_push
+    elif [ "$case_type" = "5" ]; then
+        echo "===========更新MIXbundle=========="
+        func_run_update_mixbundle
+    fi
+else
+    # 备用路径：交互菜单 → slot模式
+    while true; do
+        show_menu
+        read -p "请输入功能编号: " choice
+        case $choice in
+            1) func_run_chmod_slot ;;
+            2) func_run_scp_put_slot ;;
+            3) func_run_scp_get_log_slot ;;
+            4) func_run_scp_get_mix_slot ;;
+            5) func_run_update_mixbundle ;;
+            0) echo "${RED}退出系统中...${RESET}"; exit 0 ;;
+            *) echo "${RED}无效输入，请重新选择${RESET}"; sleep 1 ;;
+        esac
+    done
 fi

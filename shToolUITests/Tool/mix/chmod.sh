@@ -2,10 +2,18 @@
 # Created at: 12/12/2025
 # Author: Jingxin Zeng (cn33331@163.com)
 
+# 用法: chmod.sh <IP-version>
+# 示例: chmod.sh 192.168.99.32-mix8
+
 set timeout 1
-set IP   [ lindex $argv 0 ]
-set index [string first "111" $IP]
-if {$index == 0} {
+set IP_version   [ lindex $argv 0 ]
+
+# 解析IP和版本
+set parts [split $IP_version "-"]
+set IP      [lindex $parts 0]
+set version [lindex $parts 1]
+
+if {$version == "mix8"} {
     puts "mix8 mode"
     set user mixadmin
     set password mixadmin
@@ -23,8 +31,6 @@ if {$index == 0} {
     set timeout 100
     send "sudo chmod -R 777 $DIR\n";
     expect -re {[$#]}
-    # send "exit"
-    # expect eof
     interact
 } else {
     puts "mix7 mode"
@@ -44,7 +50,5 @@ if {$index == 0} {
     set timeout 100
     send "chmod -R 777 $DIR\n";
     expect -re {[$#]}
-    # send "exit"
-    # expect eof
     interact
 }

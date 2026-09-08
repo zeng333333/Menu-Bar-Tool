@@ -20,3 +20,4 @@ echo 更新SchoonerCompiler，替换文件失败mooncake_0.so，报错
 ehco 更新shTool，增加工具分组
 ehco 机台控制，增加读取传感器状态
 ehco 增加扫码枪机台控制，INN
+ehco B610修改ip逻辑，INN

@@ -62,8 +62,8 @@
         "cmd": "open $(pwd)/AtlasSigner/main"
     },
     {
-        "menu_name": "打开-B632运维工具",
-        "cmd": "open  $(pwd)/../../../shTool/B632Tool/Tool"
+        "menu_name": "打开-B610运维工具",
+        "cmd": "open  $(pwd)/B610Tool/Tool"
     },
     {
         "menu_name": "MIX",
@@ -95,19 +95,11 @@
         "submenu": [
             {
                 "menu_name": "打开AtlasDataProcessorPlus-太阳",
-                "cmd": "open  $(pwd)/../../../shTool/AtlasDataProcessorPlus.app"
-            },
-            {
-                "menu_name": "打开MIX-Debug-木剑",
-                "cmd": "open  $(pwd)/../../../shTool/MIX-Debug.app"
+                "cmd": "open  $(pwd)/AtlasDataProcessorPlus.app"
             },
             {
                 "menu_name": "打开AtlasLogToCSV",
-                "cmd": "open  $(pwd)/../../../shTool/AtlasLogToCSV.app"
-            },
-            {
-                "menu_name": "打开SublimeText",
-                "cmd": "open  $(pwd)/../../../shTool/SublimeText.app"
+                "cmd": "open  $(pwd)/AtlasLogToCSV.app"
             }
         ]
     },

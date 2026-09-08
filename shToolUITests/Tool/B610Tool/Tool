@@ -1,0 +1,160 @@
+#!/bin/bash
+# Created at: 07/20/2026
+# Author: Jingxin Zeng (cn33331@163.com)
+
+# 定义颜色代码
+RED=$(tput setaf 1)     # 红色（前景色编号1）
+GREEN=$(tput setaf 2)   # 绿色（编号2）
+YELLOW=$(tput setaf 3)  # 黄色（编号3）
+BLUE=$(tput setaf 4)    # 蓝色（编号4）
+MAGENTA=$(tput setaf 5) # 品红（编号5）
+CYAN=$(tput setaf 6)    # 青色（编号6）
+RESET=$(tput sgr0)      # 重置所有文本属性（颜色/加粗等）
+
+# 定义获取当前文件路径
+THIS_FILE=`basename "$0"`
+dir_name=`dirname "$0"`
+# echo $dir_name
+# echo $THIS_FILE
+# echo ${dir_name}/${THIS_FILE}
+dir_name="$dir_name/Resources"
+SCRIPT_PATH="$dir_name/ip_selector.scpt"
+SCRIPT_PATH_PY="$dir_name/ip_selector_tk.py"
+work_dir="/tmp/B632/"
+mkdir -p $work_dir
+rm -rf "${work_dir}/*"
+cp $dir_name/*.lua ${work_dir}
+cp $dir_name/*.im4p ${work_dir}
+work_plist="/tmp/B632/SLOT.plist"
+exec_script="/tmp/B632/run_lua"
+
+# 常用功能函数
+show_menu() {
+  clear
+  echo "${CYAN}▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂"
+  echo "                            ${MAGENTA}B632运维${CYAN}"
+  echo "▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂${RESET}"
+  echo "${YELLOW}1 SIB写fixtrue_sn,0x10"
+  echo "2 SIB写VENDOR_ID,0x00"
+  echo "0 退出脚本${RESET}"
+  echo "${CYAN}▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂${RESET}"
+}
+
+create_plist(){
+  ip="$1"
+cat > $work_plist << 'EOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>GroupArgs</key>
+  <array>
+    <dict>
+      <key>args</key>
+      <array>
+        <string>ip</string>
+        <string>fun</string>
+        <string>arg1</string>
+        <string>arg2</string>
+      </array>
+    </dict>
+  </array>
+</dict>
+</plist>
+EOF
+/usr/libexec/PlistBuddy -c "set GroupArgs:0:args:0 $ip" "$work_plist"
+}
+
+change_plist(){
+  row="$1"
+  change_info="$2"
+  /usr/libexec/PlistBuddy -c "set GroupArgs:0:args:$1 $2" "$work_plist"
+}
+
+run_lua(){
+  cat > $exec_script << 'EOF'
+#!/bin/bash
+# 当前路径
+SHELL_FOLDER=$(cd "$(dirname "$0")";pwd)
+cd "$SHELL_FOLDER"
+AtlasGroupProcess coreless ./Tool.lua /tmp/B632/SLOT.plist
+EOF
+
+chmod 777 ${exec_script}
+open -a Terminal ${exec_script}
+}
+
+get_info()
+{
+  retInfo=$(osascript -l JavaScript -e '
+    var app = Application.currentApplication();
+    app.includeStandardAdditions = true;
+    var result = app.displayDialog("输入信息：", {
+        defaultAnswer: "",
+        withTitle: "输入信息"});
+    if (result) {
+      result["textReturned"]  // <--- 将数组转为字符串，用空格分隔
+    } else {
+      "Cancel"
+    }
+')
+echo "$retInfo"
+}
+
+VENDOR_ID(){
+  IP_SELECTION=$(python3 "$SCRIPT_PATH_PY")
+  # 处理结果
+  if [ -z "$IP_SELECTION" ]; then
+      echo "未选择任何IP！"
+      exit 1
+  fi
+  # 拆分IP列表并输出
+  IFS=',' read -ra IPS <<< "$IP_SELECTION"
+  echo -e "\n✅ 选中的IP列表："
+  for ip in "${IPS[@]}"; do
+      clean_ip=$(echo "$ip" | xargs)
+      echo "- $clean_ip"
+      create_plist ${clean_ip}
+      change_plist "1" "VENDOR_ID_lua"
+      run_lua
+      sleep 0.1
+  done
+}
+
+fixtrue_sn(){
+  IP_SELECTION=$(python3 "$SCRIPT_PATH_PY")
+  # 处理结果
+  if [ -z "$IP_SELECTION" ]; then
+      echo "未选择任何IP！"
+      exit 1
+  fi
+  # 拆分IP列表并输出
+  IFS=',' read -ra IPS <<< "$IP_SELECTION"
+  echo -e "\n✅ 选中的IP列表："
+  echo -e "\n请填入FixSN,参考：DFU0001"
+  fixSn=$(get_info)
+  echo -e "fixSn: $fixSn"
+  for ip in "${IPS[@]}"; do
+      clean_ip=$(echo "$ip" | xargs)
+      echo "- $clean_ip"
+      create_plist ${clean_ip}
+      change_plist "1" "FixSnWrite_lua"
+      change_plist "2" "$fixSn"
+      run_lua
+      sleep 0.1
+  done
+}
+
+
+# 主程序循环
+while true; do
+  show_menu
+  read -p "请输入功能编号: " choice
+  
+  case $choice in
+    1) fixtrue_sn;;
+    2) VENDOR_ID;;
+    0) echo "${RED}退出系统中...${RESET}"; exit 0 ;;
+    *) echo "${RED}无效输入，请重新选择${RESET}"; sleep 1 ;;
+  esac
+done
