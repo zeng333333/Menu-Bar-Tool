@@ -27,7 +27,8 @@ on run
     -- 不同项目不同的IP列表（后缀标识 mix7/mix8，决定账号密码与重启命令）
     set ipList1 to genIPRange("192.168.99.", 32, 4, "mix8")
     set ipList2 to genIPRange("169.254.1.", 32, 4, "mix8")
-    set ipList to ipList1 & ipList2
+    set ipList3 to genIPRange("192.168.99.", 47, 1, "mix8")
+    set ipList to ipList1 & ipList2 & ipList3
 
     -- 选择IP（原生列表选择器）
     tell application "System Events"

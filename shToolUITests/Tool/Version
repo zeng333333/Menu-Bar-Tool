@@ -3,6 +3,10 @@ echo "find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'"
 echo "------------------------------------------------------"
 echo "xattr -rd com.apple.quarantine"
 echo "------------------------------------------------------"
+echo "sync;rm -rf /var/tmp/mix/*;ps -ef | grep lynx | awk '{print $2}' |xargs -i sudo kill -9 {};sudo bash /mix/etc/scripts/start.sh"
+echo "------------------------------------------------------"
+echo "cat /var/tmp/mix/launcher_appserver_dut0_lynx.log"
+echo "------------------------------------------------------"
 echo 修改func_run_update_mixbundle
 echo RPC.lua增加tab_json
 echo 增加Lua_RPCClient

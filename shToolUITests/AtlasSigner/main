@@ -59,6 +59,8 @@ func_run_Atlas_sign()
 
 		CURRENT_DIR=$(cd `dirname $0`; pwd)
 
+		codesign --force --sign - "${CURRENT_DIR}/${AtlasSigner}"
+
 		"${CURRENT_DIR}/${AtlasSigner}" "${CURRENT_DIR}/check.plist" ~/Library/Atlas2
 	elif [[ condition ]]; then
 			echo "密码错误"

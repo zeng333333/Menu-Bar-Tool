@@ -1,10 +1,10 @@
-import tkinter as tk
-from tkinter import ttk
 import subprocess
 import os
 
 
 def main():
+    import tkinter as tk
+    from tkinter import ttk
     # 对应你原脚本IP规则（后缀标识 mix7/mix8，决定账号密码与重启命令）
     ip_list1 = [f"192.168.99.{32+i}-mix8" for i in range(4)]
     ip_list2 = [f"169.254.1.{32+i}-mix8" for i in range(4)]
